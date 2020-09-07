@@ -21,10 +21,11 @@ def fetch_query(keyword):
     names = ''
     for item in sampleArr:
         if item['name']['en'] == None:
-            names += ', ' + 'ei nimeä'
+            #if name is null, go to next iteration
+            continue
         else:
             names += ', ' + item['name']['en']
-        print(names)
+    print(names)
     return names
 
 # Function that fetches data from Helsinki open API and returns data from it
