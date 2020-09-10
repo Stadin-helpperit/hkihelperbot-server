@@ -4,15 +4,20 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 # Loads the api token from the .env file
 load_dotenv()
-
+token = os.environ.get("API_TOKEN")
 # Logger, print's out info in case something is going wrong
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # Creating an Updater object, continuously fetches new updates from Telegram
-updater = Updater(token=os.environ.get("API_TOKEN"), use_context=True)
+updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher
 
-
+# Universal class for blank event to be used to create instances of events
+class Event:
+    def __init__(self, name, lat=0.0, lon=0.0):
+        self.name = name
+        self.lat = lat
+        self.lon = lon
 # Function that retches data based on a keyword sent by the user and return some matching events
 def fetch_query(keyword):
     url = 'http://open-api.myhelsinki.fi/v1/events/?tags_filter=' + keyword[0]
@@ -40,19 +45,27 @@ def fetch_nearby(lat, lon):
     data = requests.get(url).json()
     results = data['data']
     sample_arr = results[:3]
-    names = []
+    events = []
+    event_location = data['data'][0]['location']
     for item in sample_arr:
         if item['name']['en'] is None:
             if item['name']['fi'] is None:
                 # if name is null, go to next iteration
                 continue
             else:
-                names.append(item['name']['fi'])
+                event = Event(item['name']['fi'])
         else:
-            names.append(item['name']['en'])
-    names = ", ".join(names)
-    print(names)
-    return names
+            event = Event(item['name']['en'])
+        event.lat = item['location']['lat']
+        event.lon = item['location']['lon']
+        events.append(event)
+
+    print(events[0].name, events[0].lat, events[0].lon)
+    for lat, lon in event_location.items():
+        event_lat = lat
+        event_lon = lon
+        print(lat, lon)
+    return events
 
 
 # Function that fetches data from Helsinki open API and returns data from it
@@ -94,6 +107,11 @@ def caps(update, context):
     text_caps = " ".join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
+# This function should be made to send location on a map
+def location(update, context):
+    #location = fetch_nearby()
+    #requests.post(f'https://api.telegram.org/{token}/sendlocation?chat_id={update.effective_chat.id}&latitude={}&longitude={}')
+    pass
 
 # Gets the user's location if they send one and returns three events near the location
 def nearby(update, context):
@@ -101,8 +119,9 @@ def nearby(update, context):
     user_location = update.message.location
     print('Location of ' + user.first_name + ': lat:', user_location.latitude, ' lon:',
           user_location.longitude)
-    nearbyresult = fetch_nearby(user_location.latitude, user_location.longitude)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=nearbyresult)
+    event_data = fetch_nearby(user_location.latitude, user_location.longitude)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[0].name)
+    context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[0].lat, longitude=event_data[0].lon)
 
 
 # --- HERE WE CREATE HANDLER TYPE OBJECTS THAT LISTEN FOR COMMAND AND CALL THE DESIRED FUNCTIONS ---
