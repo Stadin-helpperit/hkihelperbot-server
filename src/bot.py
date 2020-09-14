@@ -40,15 +40,19 @@ def fetch_query(keyword):
         else:
             event = Event(item['name']['en'])
         event.address = item['location']['address']['street_address']
-        if item['event_dates']['starting_day'] is None or item['event_dates']['ending_day'] is None: 
-            event.end_time = ' Ei pvm'
-            event.start_time = ' Ei pvm'
+        if item['event_dates']['starting_day'] is None:
+            event.start_time = ' Ei ilmoitettua aloituspäivämäärää...'
+        else:
+            event.start_time = item['event_dates']['starting_day'][0:9]
+
+        if item['event_dates']['ending_day'] is None:
+            event.end_time = ' Ei ilmoitettua lopetuspäivämäärää...'
         else: 
         # event_dates can be None in some cases!
-            event.start_time = item['event_dates']['starting_day'][0:9]
             event.end_time = item['event_dates']['ending_day'][0:9]
+
         if item['description']['intro'] is None: 
-            event.desc = 'Ei kuvausta'
+            event.desc = 'Ei kuvausta '
         else: 
             event.desc = item['description']['intro']
 
@@ -122,11 +126,11 @@ def search(update, context):
     searchresult = fetch_query(context.args)
     # Search results should be looped and send more results to user, but for now it only send first one's name
     context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[0].name + ', osoite: ' + searchresult[0].address + ' kuvaus: ' + searchresult[0].desc
-                             + searchresult[0].start_time + ' - ' + searchresult[0].end_time)
+                             + ' Alkaa: ' + searchresult[0].start_time + ' - ' + ' Päättyy: ' + searchresult[0].end_time)
     context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[1].name + ', osoite: ' + searchresult[1].address + ' kuvaus: ' + searchresult[1].desc
-                             + searchresult[1].start_time + ' - ' + searchresult[1].end_time)
+                             + ' Alkaa: ' + searchresult[1].start_time + ' - ' + ' Päättyy: ' + searchresult[1].end_time)
     context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[2].name + ', osoite: ' + searchresult[2].address + ' kuvaus: ' + searchresult[2].desc
-                             + searchresult[2].start_time + ' - ' + searchresult[2].end_time)
+                             + ' Alkaa: ' + searchresult[2].start_time + ' - ' + ' Päättyy: ' + searchresult[2].end_time)
                              
 
 
