@@ -14,11 +14,14 @@ dispatcher = updater.dispatcher
 
 # Universal class for blank event to be used to create instances of events
 class Event:
-    def __init__(self, name, lat=0.0, lon=0.0, address=''):
+    def __init__(self, name, lat=0.0, lon=0.0, address='', desc='', start_time='', end_time=''):
         self.name = name
         self.lat = lat
         self.lon = lon
         self.address = address
+        self.desc = desc
+        self.start_time = start_time
+        self.end_time = end_time
 
 # Function that retches data based on a keyword sent by the user and return some matching events
 def fetch_query(keyword):
@@ -37,7 +40,7 @@ def fetch_query(keyword):
         else:
             event = Event(item['name']['en'])
     events.append(event)
-    #print(events)
+    # print(events)
     return events
 
 
@@ -61,13 +64,18 @@ def fetch_nearby(lat, lon):
         event.lat = item['location']['lat']
         event.lon = item['location']['lon']
         event.address = item['location']['address']['street_address']
+        event.desc = item['description']['intro']
+        # event_dates can be None in some cases!
+        event.start_time = item['event_dates']['starting_day'][0:9]
+        event.end_time = item['event_dates']['ending_day'][0:9]
         events.append(event)
 
-    print(events[0].name, events[0].lat, events[0].lon, events[0].address)
+    print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time)
     for lat, lon in event_location.items():
         event_lat = lat
         event_lon = lon
         print(lat, lon)
+    
     return events
 
 
@@ -125,10 +133,15 @@ def nearby(update, context):
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
     context.bot.send_message(chat_id=update.effective_chat.id, text='Lähimmät tapahtumasi (3 ensimmäistä osumaa): ')
     # send 3 events and addresses from nearby results list
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[0].name + ', osoite: ' + event_data[0].address)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[1].name + ', osoite: ' + event_data[1].address)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[2].name + ', osoite: ' + event_data[2].address)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[0].name + ', osoite: ' + event_data[0].address + ' kuvaus: ' + event_data[0].desc
+                             + event_data[0].start_time + ' - ' + event_data[0].end_time)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[1].name + ', osoite: ' + event_data[1].address + ' kuvaus: ' + event_data[0].desc
+                             + event_data[1].start_time + ' - ' + event_data[1].end_time)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[2].name + ', osoite: ' + event_data[2].address + ' kuvaus: ' + event_data[0].desc
+                             + event_data[2].start_time + ' - ' + event_data[2].end_time)
     context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[0].lat, longitude=event_data[0].lon)
+    context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[1].lat, longitude=event_data[1].lon)
+    context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[2].lat, longitude=event_data[2].lon)
 
 
 # --- HERE WE CREATE HANDLER TYPE OBJECTS THAT LISTEN FOR COMMAND AND CALL THE DESIRED FUNCTIONS ---
