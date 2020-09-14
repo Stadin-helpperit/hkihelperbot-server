@@ -14,10 +14,12 @@ dispatcher = updater.dispatcher
 
 # Universal class for blank event to be used to create instances of events
 class Event:
-    def __init__(self, name, lat=0.0, lon=0.0):
+    def __init__(self, name, lat=0.0, lon=0.0, address=''):
         self.name = name
         self.lat = lat
         self.lon = lon
+        self.address = address
+
 # Function that retches data based on a keyword sent by the user and return some matching events
 def fetch_query(keyword):
     url = 'http://open-api.myhelsinki.fi/v1/events/?tags_filter=' + keyword[0]
@@ -58,9 +60,10 @@ def fetch_nearby(lat, lon):
             event = Event(item['name']['en'])
         event.lat = item['location']['lat']
         event.lon = item['location']['lon']
+        event.address = item['location']['address']['street_address']
         events.append(event)
 
-    print(events[0].name, events[0].lat, events[0].lon)
+    print(events[0].name, events[0].lat, events[0].lon, events[0].address)
     for lat, lon in event_location.items():
         event_lat = lat
         event_lon = lon
@@ -75,7 +78,6 @@ def fetch_data():
     info = data['name']['fi']
     print(info)
     return info
-
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
 
@@ -121,7 +123,11 @@ def nearby(update, context):
     print('Location of ' + user.first_name + ': lat:', user_location.latitude, ' lon:',
           user_location.longitude)
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[0].name)
+    context.bot.send_message(chat_id=update.effective_chat.id, text='Lähimmät tapahtumasi (3 ensimmäistä osumaa): ')
+    # send 3 events and addresses from nearby results list
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[0].name + ', osoite: ' + event_data[0].address)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[1].name + ', osoite: ' + event_data[1].address)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[2].name + ', osoite: ' + event_data[2].address)
     context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[0].lat, longitude=event_data[0].lon)
 
 
