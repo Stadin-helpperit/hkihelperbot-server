@@ -24,19 +24,19 @@ def fetch_query(keyword):
     data = requests.get(url).json()
     results = data['data']
     sample_arr = results[:15]
-    names = []
+    events = []
     for item in sample_arr:
         if item['name']['en'] is None:
             if item['name']['fi'] is None:
                 # if name is null, go to next iteration
                 continue
             else:
-                names.append(item['name']['fi'])
+                event = Event(item['name']['fi'])
         else:
-            names.append(item['name']['en'])
-    names = ", ".join(names)
-    print(names)
-    return names
+            event = Event(item['name']['en'])
+    events.append(event)
+    #print(events)
+    return events
 
 
 # This function fetches a list of events near the users location and returns three of them
@@ -94,7 +94,8 @@ def info(update, context):
 # test fetch function to send data from json api
 def search(update, context):
     searchresult = fetch_query(context.args)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult)
+    # Search results should be looped and send more results to user, but for now it only send first one's name
+    context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[0].name)
 
 
 # Function that echoes the user's messages
