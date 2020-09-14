@@ -41,25 +41,25 @@ def fetch_query(keyword):
             event = Event(item['name']['en'])
         event.address = item['location']['address']['street_address']
         if item['event_dates']['starting_day'] is None:
-            event.start_time = ' Ei ilmoitettua aloituspäivämäärää...'
+            event.start_time = ' Ei ilmoitettua aloituspäivämäärää'
         else:
             event.start_time = item['event_dates']['starting_day'][0:9]
 
         if item['event_dates']['ending_day'] is None:
-            event.end_time = ' Ei ilmoitettua lopetuspäivämäärää...'
-        else: 
+            event.end_time = ' Ei ilmoitettua lopetuspäivämäärää'
+        else:
         # event_dates can be None in some cases!
             event.end_time = item['event_dates']['ending_day'][0:9]
 
-        if item['description']['intro'] is None: 
-            event.desc = 'Ei kuvausta '
-        else: 
+        if item['description']['intro'] is None:
+            event.desc = 'Kuvausta ei saatavilla '
+        else:
             event.desc = item['description']['intro']
 
         events.append(event)
 
     print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time)
-  
+
     # print(events)
     return events
 
@@ -95,7 +95,7 @@ def fetch_nearby(lat, lon):
         event_lat = lat
         event_lon = lon
         print(lat, lon)
-    
+
     return events
 
 
@@ -125,13 +125,13 @@ def info(update, context):
 def search(update, context):
     searchresult = fetch_query(context.args)
     # Search results should be looped and send more results to user, but for now it only send first one's name
-    context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[0].name + ', osoite: ' + searchresult[0].address + ' kuvaus: ' + searchresult[0].desc
-                             + ' Alkaa: ' + searchresult[0].start_time + ' - ' + ' Päättyy: ' + searchresult[0].end_time)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[1].name + ', osoite: ' + searchresult[1].address + ' kuvaus: ' + searchresult[1].desc
-                             + ' Alkaa: ' + searchresult[1].start_time + ' - ' + ' Päättyy: ' + searchresult[1].end_time)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=searchresult[2].name + ', osoite: ' + searchresult[2].address + ' kuvaus: ' + searchresult[2].desc
-                             + ' Alkaa: ' + searchresult[2].start_time + ' - ' + ' Päättyy: ' + searchresult[2].end_time)
-                             
+    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + searchresult[0].name + "</b>" + '\nOsoite: ' + searchresult[0].address + '\n\n' + searchresult[0].desc
+                             + '\n\nAlkaa: ' + searchresult[0].start_time + '\nPäättyy: ' + searchresult[0].end_time, parse_mode=telegram.ParseMode.HTML)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + searchresult[1].name + "</b>" + '\nOsoite: ' + searchresult[1].address + '\n\n' + searchresult[1].desc
+                             + '\n\nAlkaa: ' + searchresult[1].start_time + '\nPäättyy: ' + searchresult[1].end_time, parse_mode=telegram.ParseMode.HTML)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + searchresult[2].name + "</b>" + '\nOsoite: ' + searchresult[2].address + '\n\n' + searchresult[2].desc
+                             + '\n\nAlkaa: ' + searchresult[2].start_time+ '\nPäättyy: ' + searchresult[2].end_time, parse_mode=telegram.ParseMode.HTML)
+
 
 
 # Function that echoes the user's messages
@@ -159,14 +159,16 @@ def nearby(update, context):
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
     context.bot.send_message(chat_id=update.effective_chat.id, text='Lähimmät tapahtumasi (3 ensimmäistä osumaa): ')
     # send 3 events and addresses from nearby results list
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[0].name + ', osoite: ' + event_data[0].address + ' kuvaus: ' + event_data[0].desc
-                             + event_data[0].start_time + ' - ' + event_data[0].end_time)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[1].name + ', osoite: ' + event_data[1].address + ' kuvaus: ' + event_data[0].desc
-                             + event_data[1].start_time + ' - ' + event_data[1].end_time)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=event_data[2].name + ', osoite: ' + event_data[2].address + ' kuvaus: ' + event_data[0].desc
-                             + event_data[2].start_time + ' - ' + event_data[2].end_time)
+    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + event_data[0].name + "</b>" + '\nOsoite: ' + event_data[0].address + '\n\n' + event_data[0].desc
+                             + "\n\nAlkaa: " + event_data[0].start_time + '\nPäättyy: ' + event_data[0].end_time, parse_mode=telegram.ParseMode.HTML)
     context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[0].lat, longitude=event_data[0].lon)
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + event_data[1].name + "</b>" + '\nOsoite: ' + event_data[1].address + '\n\n' + event_data[1].desc
+                             + "\n\nAlkaa: " + event_data[1].start_time + '\nPäättyy: ' + event_data[1].end_time, parse_mode=telegram.ParseMode.HTML)
     context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[1].lat, longitude=event_data[1].lon)
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + event_data[2].name + "</b>" + '\nOsoite: ' + event_data[2].address + '\n\n' + event_data[2].desc
+                             + "\n\nAlkaa: " + event_data[2].start_time + '\nPäättyy: ' + event_data[2].end_time, parse_mode=telegram.ParseMode.HTML)
     context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[2].lat, longitude=event_data[2].lon)
 
 
