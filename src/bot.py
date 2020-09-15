@@ -1,6 +1,7 @@
-import telegram, os, logging, urllib.request, requests
+import telegram, os, logging, requests
 from dotenv import load_dotenv
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from datetime import datetime
 
 # Loads the api token from the .env file
 load_dotenv()
@@ -12,9 +13,10 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher
 
+
 # Universal class for blank event to be used to create instances of events
 class Event:
-    def __init__(self, name, lat=0.0, lon=0.0, address='', desc='', start_time='', end_time=''):
+    def __init__(self, name='', lat=0.0, lon=0.0, address='', desc='', start_time='', end_time='', link=None):
         self.name = name
         self.lat = lat
         self.lon = lon
@@ -22,45 +24,83 @@ class Event:
         self.desc = desc
         self.start_time = start_time
         self.end_time = end_time
+        self.link = link
+
+
+def str_to_datetime(date_string):
+    date_time_object = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ')
+    return date_time_object
+
+
+def datetime_to_str(date_time_object):
+    if isinstance(date_time_object, datetime):
+        date_string = date_time_object.strftime("%d.%m.%Y, %H:%M")
+    else:
+        date_string = date_time_object
+    return date_string
+
+
+# Function creates an Event-class object from an database item
+def create_event(item):
+    # Create an empty event
+    event = Event()
+
+    # Set the English name for the event and if it doesn't exist choose the Finnish name
+    if item['name']['en'] is not None:
+        event.name = item['name']['en']
+    elif item['name']['fi'] is not None:
+        event.name = item['name']['fi']
+    else:
+        event.name = 'Ei ilmoitettua nimeä'
+
+    # Set the address if it exists
+    if item['location']['address']['street_address'] is not None:
+        event.address = item['location']['address']['street_address']
+    else:
+        event.address = 'Ei ilmoitettua osoitetta'
+
+    # Set the starting and ending dates of the event
+    if item['event_dates']['starting_day'] is None:
+        event.start_time = 'Ei ilmoitettua aloituspäivämäärää'
+    else:
+        event.start_time = str_to_datetime(item['event_dates']['starting_day'])
+
+    if item['event_dates']['ending_day'] is None:
+        event.end_time = 'Ei ilmoitettua lopetuspäivämäärää'
+    else:
+        event.end_time = str_to_datetime(item['event_dates']['ending_day'])
+
+    # Set coordinates for the event
+    event.lat = item['location']['lat']
+    event.lon = item['location']['lon']
+
+    # Set the description of the event
+    if item['description']['intro'] is None:
+        event.desc = 'Kuvausta ei saatavilla'
+    else:
+        event.desc = item['description']['intro']
+
+    # Set the info link url of the event
+    event.link = item['info_url']
+
+    # Return the created event
+    return event
+
 
 # Function that retches data based on a keyword sent by the user and return some matching events
 def fetch_query(keyword):
     url = 'http://open-api.myhelsinki.fi/v1/events/?tags_filter=' + keyword[0]
     data = requests.get(url).json()
     results = data['data']
-    sample_arr = results[:15]
+    sample_arr = results[:3]
     events = []
+
     for item in sample_arr:
-        if item['name']['en'] is None:
-            if item['name']['fi'] is None:
-                # if name is null, go to next iteration
-                continue
-            else:
-                event = Event(item['name']['fi'])
-        else:
-            event = Event(item['name']['en'])
-        event.address = item['location']['address']['street_address']
-        if item['event_dates']['starting_day'] is None:
-            event.start_time = ' Ei ilmoitettua aloituspäivämäärää'
-        else:
-            event.start_time = item['event_dates']['starting_day'][0:9]
-
-        if item['event_dates']['ending_day'] is None:
-            event.end_time = ' Ei ilmoitettua lopetuspäivämäärää'
-        else:
-        # event_dates can be None in some cases!
-            event.end_time = item['event_dates']['ending_day'][0:9]
-
-        if item['description']['intro'] is None:
-            event.desc = 'Kuvausta ei saatavilla '
-        else:
-            event.desc = item['description']['intro']
-
+        event = create_event(item)
         events.append(event)
 
-    print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time)
+    print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time, events[0].link)
 
-    # print(events)
     return events
 
 
@@ -71,32 +111,30 @@ def fetch_nearby(lat, lon):
     results = data['data']
     sample_arr = results[:3]
     events = []
-    event_location = data['data'][0]['location']
+
     for item in sample_arr:
-        if item['name']['en'] is None:
-            if item['name']['fi'] is None:
-                # if name is null, go to next iteration
-                continue
-            else:
-                event = Event(item['name']['fi'])
-        else:
-            event = Event(item['name']['en'])
-        event.lat = item['location']['lat']
-        event.lon = item['location']['lon']
-        event.address = item['location']['address']['street_address']
-        event.desc = item['description']['intro']
-        # event_dates can be None in some cases!
-        event.start_time = item['event_dates']['starting_day'][0:9]
-        event.end_time = item['event_dates']['ending_day'][0:9]
+        event = create_event(item)
         events.append(event)
 
     print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time)
-    for lat, lon in event_location.items():
-        event_lat = lat
-        event_lon = lon
-        print(lat, lon)
 
     return events
+
+
+# This function takes an event and creates a message to be sent to the user
+def create_message_text(event):
+    msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc + '\n\nAlkaa: ' + \
+               datetime_to_str(event.start_time)
+
+    # Only shows the Päättyy: ... -field if ending date exists
+    if isinstance(event.end_time, datetime):
+        msg_text = msg_text + '\nPäättyy: ' + datetime_to_str(event.end_time)
+
+    # Only shows the Lue lisää... -field if link exists
+    if event.link is not None:
+        msg_text = msg_text + '\n\n<a href=\"' + event.link + '\">Lue lisää...</a>'
+
+    return msg_text
 
 
 # Function that fetches data from Helsinki open API and returns data from it
@@ -125,13 +163,10 @@ def info(update, context):
 def search(update, context):
     searchresult = fetch_query(context.args)
     # Search results should be looped and send more results to user, but for now it only send first one's name
-    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + searchresult[0].name + "</b>" + '\nOsoite: ' + searchresult[0].address + '\n\n' + searchresult[0].desc
-                             + '\n\nAlkaa: ' + searchresult[0].start_time + '\nPäättyy: ' + searchresult[0].end_time, parse_mode=telegram.ParseMode.HTML)
-    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + searchresult[1].name + "</b>" + '\nOsoite: ' + searchresult[1].address + '\n\n' + searchresult[1].desc
-                             + '\n\nAlkaa: ' + searchresult[1].start_time + '\nPäättyy: ' + searchresult[1].end_time, parse_mode=telegram.ParseMode.HTML)
-    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + searchresult[2].name + "</b>" + '\nOsoite: ' + searchresult[2].address + '\n\n' + searchresult[2].desc
-                             + '\n\nAlkaa: ' + searchresult[2].start_time+ '\nPäättyy: ' + searchresult[2].end_time, parse_mode=telegram.ParseMode.HTML)
 
+    for item in searchresult:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
+                                 , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
 
 # Function that echoes the user's messages
@@ -144,11 +179,6 @@ def caps(update, context):
     text_caps = " ".join(context.args).upper()
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
 
-# This function should be made to send location on a map
-def location(update, context):
-    #location = fetch_nearby()
-    #requests.post(f'https://api.telegram.org/{token}/sendlocation?chat_id={update.effective_chat.id}&latitude={}&longitude={}')
-    pass
 
 # Gets the user's location if they send one and returns three events near the location
 def nearby(update, context):
@@ -158,18 +188,12 @@ def nearby(update, context):
           user_location.longitude)
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
     context.bot.send_message(chat_id=update.effective_chat.id, text='Lähimmät tapahtumasi (3 ensimmäistä osumaa): ')
+
     # send 3 events and addresses from nearby results list
-    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + event_data[0].name + "</b>" + '\nOsoite: ' + event_data[0].address + '\n\n' + event_data[0].desc
-                             + "\n\nAlkaa: " + event_data[0].start_time + '\nPäättyy: ' + event_data[0].end_time, parse_mode=telegram.ParseMode.HTML)
-    context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[0].lat, longitude=event_data[0].lon)
-
-    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + event_data[1].name + "</b>" + '\nOsoite: ' + event_data[1].address + '\n\n' + event_data[1].desc
-                             + "\n\nAlkaa: " + event_data[1].start_time + '\nPäättyy: ' + event_data[1].end_time, parse_mode=telegram.ParseMode.HTML)
-    context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[1].lat, longitude=event_data[1].lon)
-
-    context.bot.send_message(chat_id=update.effective_chat.id, text="<b>" + event_data[2].name + "</b>" + '\nOsoite: ' + event_data[2].address + '\n\n' + event_data[2].desc
-                             + "\n\nAlkaa: " + event_data[2].start_time + '\nPäättyy: ' + event_data[2].end_time, parse_mode=telegram.ParseMode.HTML)
-    context.bot.send_location(chat_id=update.effective_chat.id, latitude=event_data[2].lat, longitude=event_data[2].lon)
+    for item in event_data:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item), parse_mode=telegram.ParseMode.HTML,
+                                 disable_web_page_preview=True)
+        context.bot.send_location(chat_id=update.effective_chat.id, latitude=item.lat, longitude=item.lon)
 
 
 # --- HERE WE CREATE HANDLER TYPE OBJECTS THAT LISTEN FOR COMMAND AND CALL THE DESIRED FUNCTIONS ---
