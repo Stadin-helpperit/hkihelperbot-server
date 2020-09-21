@@ -94,13 +94,14 @@ def fetch_query(keyword):
     results = data['data']
     sample_arr = results[:3]
     events = []
+    try:
+        for item in sample_arr:
+            event = create_event(item)
+            events.append(event)
 
-    for item in sample_arr:
-        event = create_event(item)
-        events.append(event)
-
-    print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time, events[0].link)
-
+        print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time, events[0].link)
+    except:
+        print('keyword not valid')
     return events
 
 
@@ -163,11 +164,12 @@ def info(update, context):
 def search(update, context):
     searchresult = fetch_query(context.args)
     # Search results should be looped and send more results to user, but for now it only send first one's name
-
-    for item in searchresult:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
-                                 , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
-
+    if len(searchresult) > 0:
+        for item in searchresult:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
+                                     , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text='No events matching keyword')
 
 # Function that echoes the user's messages
 def echo(update, context):
@@ -191,8 +193,21 @@ def nearby(update, context):
 
     # send 3 events and addresses from nearby results list
     for item in event_data:
+
+        #if item.name == event_data[1].name:
+            # if current event has same start time and name then start time should have multiple dates.
+         #   item.start_time = str('useita aikoja: \n' + str(item.start_time) + str(event_data[1].start_time))
+          #  print(item.start_time)
+
+        #if item.name == event_data[2].name:
+
+         #   item.start_time = str('useita aikoja: \n' + str(item.start_time) + str(event_data[2].start_time))
+
+      #  if item.name == event_data[1].name and item.name == event_data[2].name:
+       #     break
+
         context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item), parse_mode=telegram.ParseMode.HTML,
-                                 disable_web_page_preview=True)
+                                             disable_web_page_preview=True)
         context.bot.send_location(chat_id=update.effective_chat.id, latitude=item.lat, longitude=item.lon)
 
 
