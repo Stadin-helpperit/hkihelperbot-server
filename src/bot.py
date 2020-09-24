@@ -16,7 +16,7 @@ dispatcher = updater.dispatcher
 
 # Universal class for blank event to be used to create instances of events
 class Event:
-    def __init__(self, name='', lat=0.0, lon=0.0, address='', desc='', start_time='', end_time='', link=None):
+    def __init__(self, name='', lat=0.0, lon=0.0, address='', desc='', start_time='', end_time='', tags='', link=None):
         self.name = name
         self.lat = lat
         self.lon = lon
@@ -24,6 +24,7 @@ class Event:
         self.desc = desc
         self.start_time = start_time
         self.end_time = end_time
+        self.tags = tags
         self.link = link
 
 
@@ -83,6 +84,14 @@ def create_event(item):
     # Set the info link url of the event
     event.link = item['info_url']
 
+    # Set the tags for the event from list
+    if len(item['tags']) < 1:
+        event.tags = 'Tapahtumalla ei tageja'
+    else:
+        tags = item['tags']
+        for i in tags:
+            event.tags = event.tags + i['name'] + ', '
+
     # Return the created event
     return event
 
@@ -124,7 +133,7 @@ def fetch_nearby(lat, lon):
 
 # This function takes an event and creates a message to be sent to the user
 def create_message_text(event):
-    msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc + '\n\nAlkaa: ' + \
+    msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc +  '\nTapahtuman tagit: ' + event.tags + '\n\nAlkaa: ' + \
                datetime_to_str(event.start_time)
 
     # Only shows the Päättyy: ... -field if ending date exists
