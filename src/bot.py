@@ -169,7 +169,7 @@ def search(update, context):
             context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
                                      , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text='No events matching keyword')
+        context.bot.send_message(chat_id=update.effective_chat.id, text='No events matching keyword. Use command like /search (keyword)')
 
 # Function that echoes the user's messages
 def echo(update, context):
