@@ -11,5 +11,6 @@ def main():
     # starts the polling of incoming messages
     updater.start_polling()
 
-    if __name__ == "__main__":
-        main()
+
+if __name__ == "__main__":
+    main()
