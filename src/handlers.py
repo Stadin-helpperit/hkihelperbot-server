@@ -1,0 +1,39 @@
+from src.bot import start, caps, echo, search, nearby, info
+from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+from dotenv import load_dotenv
+import os
+
+# --- HERE WE CREATE HANDLER TYPE OBJECTS THAT LISTEN FOR COMMANDS AND CALL THE DESIRED FUNCTIONS ---
+
+# Loads the api token from the .env file
+load_dotenv()
+token = os.environ.get("API_TOKEN")
+
+# Creating an Updater object that continuously fetches new updates from Telegram
+updater = Updater(token=token, use_context=True)
+dispatcher = updater.dispatcher
+
+# This handler listens for the command "/start" and calls the previously defined
+# start function
+start_handler = CommandHandler('start', start)
+dispatcher.add_handler(start_handler)
+
+# This handler listens for the command "/start" and calls the previously defined caps function
+caps_handler = CommandHandler("caps", caps)
+dispatcher.add_handler(caps_handler)
+
+# This handler listens for user's messages and calls the previously defined echo function
+echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
+dispatcher.add_handler(echo_handler)
+
+# This handler listens for user's messages and calls the previously defined search function
+search_handler = CommandHandler('search', search)
+dispatcher.add_handler(search_handler)
+
+# This handler listens for user's messages and calls the previously defined nearby function
+nearby_handler = MessageHandler(Filters.location & (~Filters.command), nearby)
+dispatcher.add_handler(nearby_handler)
+
+# handler that listens for /info
+info_handler = CommandHandler('info', info)
+dispatcher.add_handler(info_handler)
