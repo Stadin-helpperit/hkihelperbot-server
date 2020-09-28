@@ -1,5 +1,7 @@
 # hkihelperbot-server
 
+### This branch is used to develop the master branch bot so that it consists of smaller Python modules instead of a singular file
+
 Stadin Helpperit Telegram bot is a chatbot in the Telegram messaging app that utilizes open data from the [MyHelsinki Open API](http://open-api.myhelsinki.fi/).
 The bot responds to different commands and requests. 
 
