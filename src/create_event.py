@@ -61,6 +61,14 @@ def create_event(item):
     # Set the info link url of the event
     event.link = item['info_url']
 
+    # Set the tags for the event from list
+    if len(item['tags']) < 1:
+        event.tags = 'Tapahtumalla ei tageja'
+    else:
+        tags = item['tags']
+        for i in tags:
+            event.tags = event.tags + i['name'] + ', '
+
     # Return the created event
     return event
 
