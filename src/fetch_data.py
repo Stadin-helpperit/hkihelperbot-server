@@ -18,7 +18,8 @@ def fetch_query(keyword):
 
         print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time,
               events[0].link)
-    except:
+    except Exception as ex:
+        print(ex)
         print('keyword not valid')
     return events
 

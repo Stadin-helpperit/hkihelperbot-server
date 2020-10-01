@@ -6,7 +6,8 @@ from datetime import datetime
 
 # This function takes an event and creates a message to be sent to the user
 def create_message_text(event):
-    msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc +  '\nTapahtuman tagit: ' + event.tags + '\n\nAlkaa: ' + \
+    msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc \
+               + '\n\nTapahtuman tagit: ' + event.tags + '\n\nAlkaa: ' + \
                datetime_to_str(event.start_time)
 
     # Only shows the Päättyy: ... -field if ending date exists

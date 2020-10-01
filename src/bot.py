@@ -22,8 +22,13 @@ def search(update, context):
     # Search results should be looped and send more results to user, but for now it only send first one's name
     if len(searchresult) > 0:
         for item in searchresult:
-            context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
-                                     , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+            if item.img_link is not None:
+                context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
+                                       caption=create_message_text(item), parse_mode=telegram.ParseMode.HTML)
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
+                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text='No events matching keyword. Use command like /search (keyword)')

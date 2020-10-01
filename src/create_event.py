@@ -71,9 +71,16 @@ def create_event(item):
         event.tags = 'Tapahtumalla ei tageja'
     else:
         tags = item['tags']
-        for i in tags:
-            event.tags = event.tags + i['name'] + ', '
+        e_tags = []
+        for tag in tags:
+            e_tags.append(tag['name'])
+        event.tags = ", ".join(e_tags)
+
+    # Set image if it exists
+    if item['description']['images'][0]['url'] is not None:
+        event.img_link = item['description']['images'][0]['url']
 
     # Return the created event
     return event
+
 
