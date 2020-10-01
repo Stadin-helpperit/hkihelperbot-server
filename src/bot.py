@@ -1,5 +1,5 @@
-from src.fetch_data import fetch_data, fetch_nearby, fetch_query
-from src.create_msg import create_message_text
+from fetch_data import fetch_data, fetch_nearby, fetch_query
+from create_msg import create_message_text
 import telegram
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---

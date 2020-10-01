@@ -1,4 +1,4 @@
-from src.bot import start, caps, echo, search, nearby, info
+from bot import start, caps, echo, search, nearby, info
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from dotenv import load_dotenv
 import os

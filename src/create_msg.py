@@ -1,4 +1,4 @@
-from src.create_event import datetime_to_str
+from create_event import datetime_to_str
 from datetime import datetime
 
 # --- HERE WE FORM THE MESSAGES TO BE SENT TO THE USER ---

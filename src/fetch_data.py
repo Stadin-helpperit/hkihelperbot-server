@@ -1,4 +1,4 @@
-from src.create_event import create_event
+from create_event import create_event
 import requests
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---

@@ -1,4 +1,4 @@
-from src.handlers import updater
+from handlers import updater
 import logging
 
 # --- RUN THIS TO TURN THE BOT ON ---
