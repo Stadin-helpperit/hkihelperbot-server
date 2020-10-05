@@ -1,0 +1,382 @@
+[
+    {
+        "id": "Testi1:nimeton",
+        "name": {
+          "fi": null,
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": "https://github.com/Stadin-helpperit/hkihelperbot-server",
+        "modified_at": null,
+        "location": {
+          "lat": 60.19306182861328,
+          "lon": 25.014455795288086,
+          "address": {
+            "street_address": "Pasilan asema 1",
+            "postal_code": "00200",
+            "locality": "Helsinki"
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+            {
+              "url": "https://api.hel.fi/linkedevents/media/images/kioski_1200_nakyma.jpg",
+              "copyright_holder": "",
+              "license_type": {
+                "id": 1,
+                "name": "All rights reserved."
+              }
+            }
+          ]
+        },
+        "tags": [
+          {
+            "id": "linkedevents:yso:p10727",
+            "name": "hauskaa"
+          },
+          {
+            "id": "linkedevents:yso:p14004",
+            "name": "testailua"
+          },
+          {
+            "id": "linkedevents:yso:p8268",
+            "name": "miehestä mittaa"
+          }
+        ],
+        "event_dates": {
+          "starting_day": "2020-11-22T13:00:00.000Z",
+          "ending_day": "2020-12-22T14:30:00.000Z",
+          "additional_description": null
+        }
+      },
+      {
+        "id": "Testi2:url-osoitteeton",
+        "name": {
+          "fi": "Testitapahtuma",
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": null,
+        "modified_at": null,
+        "location": {
+          "lat": 60.19306182861328,
+          "lon": 25.014455795288086,
+          "address": {
+            "street_address": "Pasilan asema 1",
+            "postal_code": "00200",
+            "locality": "Helsinki"
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+            {
+              "url": "https://api.hel.fi/linkedevents/media/images/kioski_1200_nakyma.jpg",
+              "copyright_holder": "",
+              "license_type": {
+                "id": 1,
+                "name": "All rights reserved."
+              }
+            }
+          ]
+        },
+        "tags": [
+          {
+            "id": "linkedevents:yso:p10727",
+            "name": "hauskaa"
+          },
+          {
+            "id": "linkedevents:yso:p14004",
+            "name": "testailua"
+          },
+          {
+            "id": "linkedevents:yso:p8268",
+            "name": "miehestä mittaa"
+          }
+        ],
+        "event_dates": {
+          "starting_day": "2020-11-22T13:00:00.000Z",
+          "ending_day": "2020-12-22T14:30:00.000Z",
+          "additional_description": null
+        }
+      },
+      {
+        "id": "Testi3:sijainniton",
+        "name": {
+          "fi": "Testitapahtuma",
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": "https://github.com/Stadin-helpperit/hkihelperbot-server",
+        "modified_at": null,
+        "location": {
+          "lat": null,
+          "lon": null,
+          "address": {
+            "street_address": "Pasilan asema 1",
+            "postal_code": "00200",
+            "locality": "Helsinki"
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+            {
+              "url": "https://api.hel.fi/linkedevents/media/images/kioski_1200_nakyma.jpg",
+              "copyright_holder": "",
+              "license_type": {
+                "id": 1,
+                "name": "All rights reserved."
+              }
+            }
+          ]
+        },
+        "tags": [
+          {
+            "id": "linkedevents:yso:p10727",
+            "name": "hauskaa"
+          },
+          {
+            "id": "linkedevents:yso:p14004",
+            "name": "testailua"
+          },
+          {
+            "id": "linkedevents:yso:p8268",
+            "name": "miehestä mittaa"
+          }
+        ],
+        "event_dates": {
+          "starting_day": "2020-11-22T13:00:00.000Z",
+          "ending_day": "2020-12-22T14:30:00.000Z",
+          "additional_description": null
+        }
+      },
+      {
+        "id": "Testi4:tagiton",
+        "name": {
+          "fi": "Testitapahtuma",
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": "https://github.com/Stadin-helpperit/hkihelperbot-server",
+        "modified_at": null,
+        "location": {
+          "lat": 60.19306182861328,
+          "lon": 25.014455795288086,
+          "address": {
+            "street_address": "Pasilan asema 1",
+            "postal_code": "00200",
+            "locality": "Helsinki"
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+            {
+              "url": "https://api.hel.fi/linkedevents/media/images/kioski_1200_nakyma.jpg",
+              "copyright_holder": "",
+              "license_type": {
+                "id": 1,
+                "name": "All rights reserved."
+              }
+            }
+          ]
+        },
+        "tags": [
+          
+        ],
+        "event_dates": {
+          "starting_day": "2020-11-22T13:00:00.000Z",
+          "ending_day": "2020-12-22T14:30:00.000Z",
+          "additional_description": null
+        }
+      },
+      {
+        "id": "Testi5:osoitteeton",
+        "name": {
+          "fi": "Testitapahtuma",
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": "https://github.com/Stadin-helpperit/hkihelperbot-server",
+        "modified_at": null,
+        "location": {
+          "lat": 60.19306182861328,
+          "lon": 25.014455795288086,
+          "address": {
+            "street_address": null,
+            "postal_code": null,
+            "locality": null
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+            {
+              "url": "https://api.hel.fi/linkedevents/media/images/kioski_1200_nakyma.jpg",
+              "copyright_holder": "",
+              "license_type": {
+                "id": 1,
+                "name": "All rights reserved."
+              }
+            }
+          ]
+        },
+        "tags": [
+          {
+            "id": "linkedevents:yso:p10727",
+            "name": "hauskaa"
+          },
+          {
+            "id": "linkedevents:yso:p14004",
+            "name": "testailua"
+          },
+          {
+            "id": "linkedevents:yso:p8268",
+            "name": "miehestä mittaa"
+          }
+        ],
+        "event_dates": {
+          "starting_day": "2020-11-22T13:00:00.000Z",
+          "ending_day": "2020-12-22T14:30:00.000Z",
+          "additional_description": null
+        }
+      },
+      {
+        "id": "Testi6:ajankohdaton",
+        "name": {
+          "fi": "Testitapahtuma",
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": "https://github.com/Stadin-helpperit/hkihelperbot-server",
+        "modified_at": null,
+        "location": {
+          "lat": 60.19306182861328,
+          "lon": 25.014455795288086,
+          "address": {
+            "street_address": "Pasilan asema 1",
+            "postal_code": "00200",
+            "locality": "Helsinki"
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+            {
+              "url": "https://api.hel.fi/linkedevents/media/images/kioski_1200_nakyma.jpg",
+              "copyright_holder": "",
+              "license_type": {
+                "id": 1,
+                "name": "All rights reserved."
+              }
+            }
+          ]
+        },
+        "tags": [
+          {
+            "id": "linkedevents:yso:p10727",
+            "name": "hauskaa"
+          },
+          {
+            "id": "linkedevents:yso:p14004",
+            "name": "testailua"
+          },
+          {
+            "id": "linkedevents:yso:p8268",
+            "name": "miehestä mittaa"
+          }
+        ],
+        "event_dates": {
+          "starting_day": null,
+          "ending_day": null,
+          "additional_description": null
+        }
+      },
+      {
+        "id": "Testi7:kuvaton",
+        "name": {
+          "fi": "Testitapahtuma",
+          "en": null,
+          "sv": null,
+          "zh": null
+        },
+        "source_type": {
+          "id": null,
+          "name": null
+        },
+        "info_url": "https://github.com/Stadin-helpperit/hkihelperbot-server",
+        "modified_at": null,
+        "location": {
+          "lat": 60.19306182861328,
+          "lon": 25.014455795288086,
+          "address": {
+            "street_address": "Pasilan asema 1",
+            "postal_code": "00200",
+            "locality": "Helsinki"
+          }
+        },
+        "description": {
+          "intro": "Intro teksti",
+          "body": "<p>BODY TEKSTIÄ</p>",
+          "images": [
+          ]
+        },
+        "tags": [
+          {
+            "id": "linkedevents:yso:p10727",
+            "name": "hauskaa"
+          },
+          {
+            "id": "linkedevents:yso:p14004",
+            "name": "testailua"
+          },
+          {
+            "id": "linkedevents:yso:p8268",
+            "name": "miehestä mittaa"
+          }
+        ],
+        "event_dates": {
+          "starting_day": "2020-11-22T13:00:00.000Z",
+          "ending_day": "2020-12-22T14:30:00.000Z",
+          "additional_description": null
+        }
+      }
+]

@@ -1,5 +1,5 @@
 from datetime import datetime
-from classes.Event import Event
+from src.classes.Event import Event
 import pytz
 
 # --- HERE WE FORM EVENT OBJECTS FROM FETCHED DATA ---
@@ -77,8 +77,9 @@ def create_event(item):
         event.tags = ", ".join(e_tags)
 
     # Set image if it exists
-    if item['description']['images'][0]['url'] is not None:
-        event.img_link = item['description']['images'][0]['url']
+    if item['description']['images'] != []:
+        if item['description']['images'][0]['url'] is not None:
+            event.img_link = item['description']['images'][0]['url'] 
 
     # Return the created event
     return event
