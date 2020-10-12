@@ -1,8 +1,11 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 from datetime import datetime, timedelta
+
+import telegramcalendar
 from fetch_data import fetch_data, fetch_nearby, fetch_query, fetch_by_date
 from create_msg import create_message_text
 import telegram
+from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
 
@@ -76,24 +79,36 @@ def nearby(update, context):
         context.bot.send_location(chat_id=update.effective_chat.id, latitude=item.lat, longitude=item.lon)
 
 
+# This function handles the user pressing a button on a calendar keyboard
+def cal_inline_handler(update, context):
+    selected, date = telegramcalendar.process_calendar_selection(context.bot, update)
+    if selected:
+        query = update.callback_query
+        query.edit_message_text(text='Etsitään tapahtumia päivämäärällä {}...'.format(date.strftime('%d.%m.%Y')))
+        search_date(update, context, date.strftime('%d.%m.%Y'))
+        query.edit_message_text(text='Tapahtumat päivämäärällä {}:'.format(date.strftime('%d.%m.%Y')))
+
+
 # This function handles the user pressing a button on an inline keyboard
-def button(update, context):
+def button_inline_handler(update, context):
     def date_to_str(daysdelta=0):
         date = datetime.now() + timedelta(days=daysdelta)
         return date.strftime('%d.%m.%Y')
 
     query = update.callback_query
-    if query.data == '1':
+    if query.data == 'i1':
         query.edit_message_text(text="Etsitään tapahtumia tänään... ")
         search_date(update, context, date_to_str())
         query.edit_message_text(text="Tapahtumat tänään: ")
-    elif query.data == '2':
-        query.edit_message_text(text="Etsitään tapahtumia tänään... ")
+    elif query.data == 'i2':
+        query.edit_message_text(text="Etsitään tapahtumia huomenna... ")
         search_date(update, context, date_to_str(1))
         query.edit_message_text(text="Tapahtumat huomenna: ")
-    elif query.data == '3':
-        query.edit_message_text(text="Jos haluat etsiä tapahtumia tietyltä päivältä, kirjoita komento "
-                                     "muodossa \n\"/searchdate pp.kk.vvvv\"")
+    elif query.data == 'i3':
+        query.edit_message_text(text="Valitse päivämäärä: ", reply_markup=telegramcalendar.create_calendar())
+
+        # query.edit_message_text(text="Jos haluat etsiä tapahtumia tietyltä päivältä, kirjoita komento "
+        #                             "muodossa \n\"/searchdate pp.kk.vvvv\"")
 
 
 # This function will handle the user command /searchdate
@@ -105,9 +120,9 @@ def handle_search_date(update, context):
         search_date(update, context, context.args[0])
         msg.edit_text('Tapahtumat päivämäärällä {}:'.format(context.args[0]))
     else:
-        keyboard = [[InlineKeyboardButton(text='Tänään', callback_data='1'),
-                     InlineKeyboardButton("Huomenna", callback_data='2')],
-                    [InlineKeyboardButton("Valitse päivämäärä", callback_data='3')]]
+        keyboard = [[InlineKeyboardButton(text='Tänään', callback_data='i1'),
+                     InlineKeyboardButton("Huomenna", callback_data='i2')],
+                    [InlineKeyboardButton("Valitse päivämäärä", callback_data='i3')]]
         reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
         update.message.reply_text('Miltä ajalta haluat tapahtumia:', reply_markup=reply_markup)
 
