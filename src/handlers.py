@@ -1,5 +1,5 @@
-from bot import start, caps, echo, search, nearby, info
-from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
+from bot import start, caps, echo, search, nearby, info, handle_search_date, button
+from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
 
@@ -37,3 +37,10 @@ dispatcher.add_handler(nearby_handler)
 # handler that listens for /info
 info_handler = CommandHandler('info', info)
 dispatcher.add_handler(info_handler)
+
+# handler that listens for /searchdate
+searchdate_handler = CommandHandler('searchdate', handle_search_date)
+dispatcher.add_handler(searchdate_handler)
+
+# handler for inline keyboard buttons
+updater.dispatcher.add_handler(CallbackQueryHandler(button))

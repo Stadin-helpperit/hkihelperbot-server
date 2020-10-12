@@ -1,4 +1,6 @@
-from fetch_data import fetch_data, fetch_nearby, fetch_query
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from datetime import datetime, timedelta
+from fetch_data import fetch_data, fetch_nearby, fetch_query, fetch_by_date
 from create_msg import create_message_text
 import telegram
 
@@ -72,3 +74,62 @@ def nearby(update, context):
                                  parse_mode=telegram.ParseMode.HTML,
                                  disable_web_page_preview=True)
         context.bot.send_location(chat_id=update.effective_chat.id, latitude=item.lat, longitude=item.lon)
+
+
+# This function handles the user pressing a button on an inline keyboard
+def button(update, context):
+    def date_to_str(daysdelta=0):
+        date = datetime.now() + timedelta(days=daysdelta)
+        return date.strftime('%d.%m.%Y')
+
+    query = update.callback_query
+    if query.data == '1':
+        query.edit_message_text(text="Etsitään tapahtumia tänään... ")
+        search_date(update, context, date_to_str())
+        query.edit_message_text(text="Tapahtumat tänään: ")
+    elif query.data == '2':
+        query.edit_message_text(text="Etsitään tapahtumia tänään... ")
+        search_date(update, context, date_to_str(1))
+        query.edit_message_text(text="Tapahtumat huomenna: ")
+    elif query.data == '3':
+        query.edit_message_text(text="Jos haluat etsiä tapahtumia tietyltä päivältä, kirjoita komento "
+                                     "muodossa \n\"/searchdate pp.kk.vvvv\"")
+
+
+# This function will handle the user command /searchdate
+# If a parameter is givn by the user, this will call the search_date function
+# otherwise it will invoke the inline keyboard to ask the date
+def handle_search_date(update, context):
+    if context.args:
+        msg = update.message.reply_text('Etsitään tapahtumia päivämäärällä {}...'.format(context.args[0]))
+        search_date(update, context, context.args[0])
+        msg.edit_text('Tapahtumat päivämäärällä {}:'.format(context.args[0]))
+    else:
+        keyboard = [[InlineKeyboardButton(text='Tänään', callback_data='1'),
+                     InlineKeyboardButton("Huomenna", callback_data='2')],
+                    [InlineKeyboardButton("Valitse päivämäärä", callback_data='3')]]
+        reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+        update.message.reply_text('Miltä ajalta haluat tapahtumia:', reply_markup=reply_markup)
+
+
+# This function will call fetch_by_date and send the user three events on a given date
+def search_date(update, context, date):
+    date = date.split(".")
+    date = date[2] + '-' + date[1] + '-' + date[0] + 'T12:00:00.000Z'
+    print(date)
+    context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
+
+    searchresult = fetch_by_date(date)
+
+    if len(searchresult) > 0:
+        for item in searchresult:
+            if item.img_link is not None:
+                context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
+                                       caption=create_message_text(item), parse_mode=telegram.ParseMode.HTML)
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
+                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text='No events on chosen date')
