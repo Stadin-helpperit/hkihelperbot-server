@@ -64,6 +64,15 @@ def fetch_trains(station):
     return trains
 
 
+# Function that fetches coordinates by address word from digitransit Geocoding API. Used to generate route plans.
+def fetch_coords(address):
+    result = requests.get("https://api.digitransit.fi/geocoding/v1/search?text=" + address + "&size=1").json()
+    coordinates = []
+    coordinates.append(result['features'][0]['geometry']['coordinates'][0])
+    coordinates.append(result['features'][0]['geometry']['coordinates'][1])
+    return coordinates
+
+
 # This function fetches all events from myHelsinki-api and filters items on a given day
 def fetch_by_date(date):
     def get_start_time(item):

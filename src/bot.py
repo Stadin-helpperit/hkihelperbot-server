@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import telegramcalendar
 from fetch_data import fetch_data, fetch_nearby, fetch_query, fetch_by_date, fetch_trains
+from fetch_hsl_data import fetch_hsl_route, create_route_msg
 from create_msg import create_message_text
 from create_msg import create_message_train
 import telegram
@@ -52,6 +53,11 @@ def trains(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
                                  parse_mode=telegram.ParseMode.HTML)
 
+def route(update, context):
+    routeresult = fetch_hsl_route()
+    routemsg = create_route_msg()
+    for item in range(len(routemsg)):
+        context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg[item])
 
 # Function that sends the given text back in all caps as a message
 def caps(update, context):
