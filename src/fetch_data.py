@@ -1,16 +1,20 @@
-from create_event import create_event
+from create_event import create_event, str_to_datetime
 import requests
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
 
 
 # Function that retches data based on a keyword sent by the user and returns some matching events
-def fetch_query(keyword):
-    url = 'http://open-api.myhelsinki.fi/v1/events/?tags_filter=' + keyword[0]
-    data = requests.get(url).json()
-    results = data['data']
-    sample_arr = results[:3]
-    events = []
+def fetch_query(all_events, keyword):
+    def filter_events_by_tag(item):
+        if keyword in item.tags:
+            return True
+        else:
+            return False
+
+    results = list(filter(filter_events_by_tag, all_events))
+    query_result_events = results[:3]
+    """events = []
     try:
         for item in sample_arr:
             event = create_event(item)
@@ -20,8 +24,8 @@ def fetch_query(keyword):
               events[0].link)
     except Exception as ex:
         print(ex)
-        print('keyword not valid')
-    return events
+        print('keyword not valid')"""
+    return query_result_events
 
 
 # Function that fetches a list of events near the location sent by user and returns three of them
@@ -41,40 +45,54 @@ def fetch_nearby(lat, lon):
     return events
 
 
-# Function that fetches data from Helsinki open API and returns data from it
-def fetch_data():
-    url = "http://open-api.myhelsinki.fi/v1/event/helsinki:af2e5ay52i"
+# Function that fetches all events from Helsinki open API and returns the events as a list
+def fetch_all():
+    def get_event_name(item):
+        return item.name
+
+    # Function to help filter out events that have no start time
+    def filter_events_with_starttime(item):
+        if item['event_dates']['starting_day'] is None:
+            return False
+        else:
+            return True
+
+    url = "http://open-api.myhelsinki.fi/v1/events/"
     data = requests.get(url).json()
-    info = data['name']['fi']
-    print(info)
-    return info
+    all_events = data['data']
+    all_events = filter(filter_events_with_starttime, all_events)
+
+    events = []
+    event_names = []
+    for item in all_events:
+        event = create_event(item)
+        if event.name not in event_names:
+            events.append(event)
+            event_names.append(event.name)
+        else:
+            event_to_add_st = next((x for x in events if x.name == event.name), None)
+            event_to_add_st.add_start_time(event.start_time[0])
+
+    # sort alphabetically
+    # events.sort(key=get_event_name)
+
+    return events
 
 
 # This function fetches all events from myHelsinki-api and filters items on a given day
-def fetch_by_date(date):
-    def get_start_time(item):
-        if item['event_dates']['starting_day'] is None:
-            return '999999999999999999'
-        else:
-            return item['event_dates']['starting_day']
-
+def fetch_by_date(events, date):
     def filter_events(item):
-        if get_start_time(item)[0:10] == date[0:10]:
+        if str_to_datetime(date) in item.start_time:
             return True
         else:
             return False
 
-    url = "http://open-api.myhelsinki.fi/v1/events/"
-    data = requests.get(url).json()
-    results = data['data']
-    sample_array = filter(filter_events, results)
-    results.sort(key=get_start_time)
+    sample_array = filter(filter_events, events)
 
     events = []
     for item in sample_array:
-        print(item)
-        event = create_event(item)
-        events.append(event)
+        print(item.name)
+        events.append(item)
         if len(events) >= 3:
             break
     return events

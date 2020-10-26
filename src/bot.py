@@ -1,11 +1,41 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
+import time
+import threading
 
 import telegramcalendar
-from fetch_data import fetch_data, fetch_nearby, fetch_query, fetch_by_date
+from fetch_data import fetch_all, fetch_nearby, fetch_query, fetch_by_date
 from create_msg import create_message_text
 import telegram
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+
+# a processed list of all events to be fetched once an hour and should be used by all functions
+all_events = []
+
+
+# --- SCHEDULED FUNCTIONS TO FETCH AND PROCESS DATA FROM MYHELSINKI API
+
+# 3600 seconds = 1 hour
+WAIT_SECONDS = 3600
+
+
+# fetch and process all events every hour
+def sched_fetch():
+    print('Scheduled fetch beginning')
+    global all_events
+    all_events = fetch_all()
+    print('Scheduled fetch done')
+
+    """for item in all_events:
+        print(item.name + ' : ')
+        for time in item.start_time:
+            print(time)"""
+
+    threading.Timer(WAIT_SECONDS, sched_fetch).start()
+
+
+# initial fetch when starting the bot
+sched_fetch()
+
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
 
@@ -16,14 +46,8 @@ def start(update, context):
 
 
 # test fetch function to send data from json api
-def info(update, context):
-    infomsg = fetch_data()
-    context.bot.send_message(chat_id=update.effective_chat.id, text=infomsg)
-
-
-# test fetch function to send data from json api
 def search(update, context):
-    searchresult = fetch_query(context.args)
+    searchresult = fetch_query(all_events, context.args[0])
     # Search results should be looped and send more results to user, but for now it only send first one's name
     if len(searchresult) > 0:
         for item in searchresult:
@@ -59,20 +83,8 @@ def nearby(update, context):
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
     context.bot.send_message(chat_id=update.effective_chat.id, text='Lähimmät tapahtumasi (3 ensimmäistä osumaa): ')
 
-    # send 3 events and addresses from nearby results list
+    # send 3 events and maps from nearby results list
     for item in event_data:
-        # if item.name == event_data[1].name:
-        # if current event has same start time and name then start time should have multiple dates.
-        #   item.start_time = str('useita aikoja: \n' + str(item.start_time) + str(event_data[1].start_time))
-        #  print(item.start_time)
-
-        # if item.name == event_data[2].name:
-
-        #   item.start_time = str('useita aikoja: \n' + str(item.start_time) + str(event_data[2].start_time))
-
-        #  if item.name == event_data[1].name and item.name == event_data[2].name:
-        #     break
-
         context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item),
                                  parse_mode=telegram.ParseMode.HTML,
                                  disable_web_page_preview=True)
@@ -107,12 +119,9 @@ def button_inline_handler(update, context):
     elif query.data == 'i3':
         query.edit_message_text(text="Valitse päivämäärä: ", reply_markup=telegramcalendar.create_calendar())
 
-        # query.edit_message_text(text="Jos haluat etsiä tapahtumia tietyltä päivältä, kirjoita komento "
-        #                             "muodossa \n\"/searchdate pp.kk.vvvv\"")
-
 
 # This function will handle the user command /searchdate
-# If a parameter is givn by the user, this will call the search_date function
+# If a parameter is given by the user, this will call the search_date function
 # otherwise it will invoke the inline keyboard to ask the date
 def handle_search_date(update, context):
     if context.args:
@@ -134,11 +143,12 @@ def search_date(update, context, date):
     print(date)
     context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
 
-    searchresult = fetch_by_date(date)
+    searchresult = fetch_by_date(all_events, date)
 
     if len(searchresult) > 0:
         for item in searchresult:
             if item.img_link is not None:
+                print(item.img_link)
                 context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
                                        caption=create_message_text(item), parse_mode=telegram.ParseMode.HTML)
             else:

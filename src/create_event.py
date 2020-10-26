@@ -46,7 +46,7 @@ def create_event(item):
     if item['event_dates']['starting_day'] is None:
         event.start_time = 'Ei ilmoitettua aloituspäivämäärää'
     else:
-        event.start_time = str_to_datetime(item['event_dates']['starting_day'])
+        event.add_start_time(str_to_datetime(item['event_dates']['starting_day']))
 
     if item['event_dates']['ending_day'] is None:
         event.end_time = 'Ei ilmoitettua lopetuspäivämäärää'
@@ -71,17 +71,13 @@ def create_event(item):
         event.tags = 'Tapahtumalla ei tageja'
     else:
         tags = item['tags']
-        e_tags = []
         for tag in tags:
-            e_tags.append(tag['name'])
-        event.tags = ", ".join(e_tags)
+            event.add_tag(tag['name'])
 
     # Set image if it exists
-    if item['description']['images'] != []:
-        if item['description']['images'][0]['url'] is not None:
+    if item['description']['images']:
+        if item['description']['images'][0]['url'] is not None and '{' not in item['description']['images'][0]['url']:
             event.img_link = item['description']['images'][0]['url'] 
 
     # Return the created event
     return event
-
-
