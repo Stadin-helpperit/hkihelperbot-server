@@ -50,6 +50,7 @@ def fetch_data():
     print(info)
     return info
 
+
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
 def fetch_trains(station):
     result = requests.get("https://rata.digitraffic.fi/api/v1/live-trains/station/" + station[0] + "?minutes_before_departure=15&minutes_after_departure=15&minutes_before_arrival=15&minutes_after_arrival=15").json()
@@ -62,6 +63,16 @@ def fetch_trains(station):
     # Print example
     print(str(trains[0].number) + ', ' + trains[0].departure + ', ' + trains[0].arrival)
     return trains
+
+
+# Function that fetches a list of all train stations abbrevations and full names
+def fetch_stations():
+    result = requests.get("https://rata.digitraffic.fi/api/v1/metadata/stations").json()
+    station_codes_list = []
+    for item in result:
+        print(item['stationName'] + ', ' + item['stationShortCode'])
+        station_codes_list.append(item)
+    return station_codes_list
 
 
 # Function that fetches coordinates by address word from digitransit Geocoding API. Used to generate route plans.
