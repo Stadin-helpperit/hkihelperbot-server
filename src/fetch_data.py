@@ -1,4 +1,5 @@
 from create_event import create_event
+from create_train import create_train
 import requests
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
@@ -48,6 +49,19 @@ def fetch_data():
     info = data['name']['fi']
     print(info)
     return info
+
+# Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
+def fetch_trains(station):
+    result = requests.get("https://rata.digitraffic.fi/api/v1/live-trains/station/" + station[0] + "?minutes_before_departure=15&minutes_after_departure=15&minutes_before_arrival=15&minutes_after_arrival=15").json()
+    # Array to save all train objects
+    trains = []
+    # Go through whole response json and create a Train instance and append it to array
+    for item in result:
+        train = create_train(item)
+        trains.append(train)
+    # Print example
+    print(str(trains[0].number) + ', ' + trains[0].departure + ', ' + trains[0].arrival)
+    return trains
 
 
 # This function fetches all events from myHelsinki-api and filters items on a given day

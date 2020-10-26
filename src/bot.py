@@ -2,10 +2,11 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRe
 from datetime import datetime, timedelta
 
 import telegramcalendar
-from fetch_data import fetch_data, fetch_nearby, fetch_query, fetch_by_date
+from fetch_data import fetch_data, fetch_nearby, fetch_query, fetch_by_date, fetch_trains
 from create_msg import create_message_text
+from create_msg import create_message_train
 import telegram
-from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+#from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
 
@@ -42,6 +43,14 @@ def search(update, context):
 # Function that echoes the user's messages
 def echo(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+
+
+# Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
+def trains(update, context):
+    trainsresult = fetch_trains(context.args)
+    for item in trainsresult:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
+                                 parse_mode=telegram.ParseMode.HTML)
 
 
 # Function that sends the given text back in all caps as a message
