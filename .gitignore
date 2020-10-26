@@ -77,7 +77,8 @@ Temporary Items
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+.idea/python-tg-bot.iml
+*.iml
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
