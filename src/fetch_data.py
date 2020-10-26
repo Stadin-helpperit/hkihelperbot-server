@@ -48,3 +48,33 @@ def fetch_data():
     info = data['name']['fi']
     print(info)
     return info
+
+
+# This function fetches all events from myHelsinki-api and filters items on a given day
+def fetch_by_date(date):
+    def get_start_time(item):
+        if item['event_dates']['starting_day'] is None:
+            return '999999999999999999'
+        else:
+            return item['event_dates']['starting_day']
+
+    def filter_events(item):
+        if get_start_time(item)[0:10] == date[0:10]:
+            return True
+        else:
+            return False
+
+    url = "http://open-api.myhelsinki.fi/v1/events/"
+    data = requests.get(url).json()
+    results = data['data']
+    sample_array = filter(filter_events, results)
+    results.sort(key=get_start_time)
+
+    events = []
+    for item in sample_array:
+        print(item)
+        event = create_event(item)
+        events.append(event)
+        if len(events) >= 3:
+            break
+    return events

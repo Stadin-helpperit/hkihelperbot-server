@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.classes.Event import Event
+from classes.Event import Event
 import pytz
 
 # --- HERE WE FORM EVENT OBJECTS FROM FETCHED DATA ---
