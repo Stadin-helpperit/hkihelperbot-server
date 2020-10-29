@@ -1,4 +1,4 @@
-from bot import start, caps, echo, search, nearby, info, handle_search_date, button_inline_handler, cal_inline_handler, \
+from bot import start, caps, echo, search, nearby, handle_search_date, button_inline_handler, cal_inline_handler, \
     trains, route, stations, button_selection_handler
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
@@ -46,10 +46,6 @@ dispatcher.add_handler(route_handler)
 # This handler listens for user's messages and calls the previously defined nearby function
 nearby_handler = MessageHandler(Filters.location & (~Filters.command), nearby)
 dispatcher.add_handler(nearby_handler)
-
-# handler that listens for /info
-info_handler = CommandHandler('info', info)
-dispatcher.add_handler(info_handler)
 
 # handler that listens for /searchdate
 searchdate_handler = CommandHandler('searchdate', handle_search_date)
