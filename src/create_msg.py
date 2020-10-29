@@ -8,16 +8,17 @@ from datetime import datetime
 def create_message_text(event):
     msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc \
                + '\n\nTapahtuman tagit: ' + ', '.join(event.tags) + '\n\nAlkaa: ' + \
-               datetime_to_str(event.start_time[0])
+               datetime_to_str(event.get_sorted_start_times()[0]) # TODO: korjaa pvm
 
     # Only shows the Päättyy: ... -field if ending date exists
     if isinstance(event.end_time, datetime):
         msg_text = msg_text + '\nPäättyy: ' + datetime_to_str(event.end_time)
 
+    # TODO: korjaa niin että näkyy oikea pvm
     if len(event.start_time) > 1:
         msg_text = msg_text + '\nMyös: '
         counter = 0
-        for time in event.start_time[1:-1]:
+        for time in event.get_sorted_start_times()[1:-1]:
             # maximum five dates to avoid clutter
             if counter > 4:
                 break

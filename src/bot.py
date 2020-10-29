@@ -1,6 +1,5 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
-import time
 import threading
 
 import telegramcalendar
@@ -45,7 +44,7 @@ def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 
 
-# test fetch function to send data from json api
+# a function to search events by keyword
 def search(update, context):
     searchresult = fetch_query(all_events, context.args[0])
     # Search results should be looped and send more results to user, but for now it only send first one's name

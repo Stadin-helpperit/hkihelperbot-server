@@ -68,7 +68,7 @@ def create_event(item):
 
     # Set the tags for the event from list
     if len(item['tags']) < 1:
-        event.tags = 'Tapahtumalla ei tageja'
+        event.tags = ['Tapahtumalla ei tageja']
     else:
         tags = item['tags']
         for tag in tags:

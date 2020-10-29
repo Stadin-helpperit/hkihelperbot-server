@@ -19,3 +19,15 @@ class Event:
 
     def add_tag(self, tag):
         self.tags.append(tag)
+
+    def get_start_dates(self):
+        event_start_dates = []
+        for time in self.start_time:
+            event_start_dates.append(time.date())
+        return event_start_dates
+
+    def get_sorted_start_times(self):
+        def get_start_time(item):
+            return item
+        self.start_time.sort(key=get_start_time)
+        return self.start_time

@@ -82,7 +82,7 @@ def fetch_all():
 # This function fetches all events from myHelsinki-api and filters items on a given day
 def fetch_by_date(events, date):
     def filter_events(item):
-        if str_to_datetime(date) in item.start_time:
+        if str_to_datetime(date).date() in item.get_start_dates():
             return True
         else:
             return False
