@@ -1,4 +1,5 @@
-from bot import start, caps, echo, search, nearby, handle_search_date, button_inline_handler, cal_inline_handler
+from bot import start, caps, echo, search, nearby, handle_search_date, button_inline_handler, cal_inline_handler, \
+    trains, route, stations, button_selection_handler
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
@@ -30,6 +31,18 @@ dispatcher.add_handler(echo_handler)
 search_handler = CommandHandler('search', search)
 dispatcher.add_handler(search_handler)
 
+# This handler listens for user's messages and calls the previously defined trains function
+trains_handler = CommandHandler('trains', trains)
+dispatcher.add_handler(trains_handler)
+
+# This handler listens for user's messages and calls the previously defined trains function
+stationslist_handler = CommandHandler('stations', stations)
+dispatcher.add_handler(stationslist_handler)
+
+# This handler listens for user's messages and calls the previously defined trains function
+route_handler = CommandHandler('route', route)
+dispatcher.add_handler(route_handler)
+
 # This handler listens for user's messages and calls the previously defined nearby function
 nearby_handler = MessageHandler(Filters.location & (~Filters.command), nearby)
 dispatcher.add_handler(nearby_handler)
@@ -38,8 +51,13 @@ dispatcher.add_handler(nearby_handler)
 searchdate_handler = CommandHandler('searchdate', handle_search_date)
 dispatcher.add_handler(searchdate_handler)
 
+# handler for event routing button
+updater.dispatcher.add_handler(CallbackQueryHandler(button_selection_handler, pattern='s'))
+
 # handler for inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(button_inline_handler, pattern='i'))
 
 # handler for calendar inline buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(cal_inline_handler))
+
+

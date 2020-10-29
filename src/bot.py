@@ -1,11 +1,11 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
-import threading
-
-import telegramcalendar
-from fetch_data import fetch_all, fetch_nearby, fetch_query, fetch_by_date
-from create_msg import create_message_text
+from fetch_data import fetch_all, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations
+from fetch_hsl_data import fetch_hsl_route, create_route_msg
+from create_msg import create_message_text, create_message_train
 import telegram
+import threading
+import telegramcalendar
 
 # a processed list of all events to be fetched once an hour and should be used by all functions
 all_events = []
@@ -65,6 +65,74 @@ def search(update, context):
 # Function that echoes the user's messages
 def echo(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+
+
+# Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
+def trains(update, context):
+    trainsresult = fetch_trains(context.args)
+    for item in trainsresult:
+        context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
+                                 parse_mode=telegram.ParseMode.HTML)
+
+
+def button_selection_handler(update, context):
+    query = update.callback_query
+    if query.data == 's1':
+        query.edit_message_text(text="Etsitään asemia A-F... ")
+        scope = 'a-f'
+        stations_selection(update, context, scope)
+        query.edit_message_text(text="ASEMAT: ")
+    elif query.data == 's2':
+        query.edit_message_text(text="Etsitään asemia G-N... ")
+        scope = 'g-n'
+        stations_selection(update, context, scope)
+        query.edit_message_text(text="ASEMAT: ")
+    elif query.data == 's3':
+        query.edit_message_text(text="Etsitään asemia O-Ö... ")
+        scope = 'o-ö'
+        stations_selection(update, context, scope)
+        query.edit_message_text(text="ASEMAT: ")
+
+
+# Function that lists all station shortcodes with matching stations for user to use with /trains command
+def stations(update, context):
+    keyboard = [[InlineKeyboardButton(text='A-F', callback_data='s1'),
+                 InlineKeyboardButton("G-N", callback_data='s2')],
+                [InlineKeyboardButton("O-Ö", callback_data='s3')]]
+    reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+    update.message.reply_text('Valitse asemalyhenteet väliltä:', reply_markup=reply_markup)
+
+
+def stations_selection(update, context, scope):
+    stationslist = fetch_stations()
+    msg_text = ''
+    context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
+    if scope == 'a-f':
+        for item in stationslist[:20]:
+            if item['type'] == 'STATION':
+                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
+            else:
+                continue
+    elif scope == 'g-n':
+        for item in stationslist[21:40]:
+            if item['type'] == 'STATION':
+                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
+            else:
+                continue
+    elif scope == 'o-ö':
+        for item in stationslist[41:60]:
+            if item['type'] == 'STATION':
+                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
+            else:
+                continue
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
+
+
+def route(update, context):
+    routemsg = create_route_msg()
+    for item in range(len(routemsg)):
+        context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg[item])
 
 
 # Function that sends the given text back in all caps as a message
@@ -133,6 +201,7 @@ def handle_search_date(update, context):
                     [InlineKeyboardButton("Valitse päivämäärä", callback_data='i3')]]
         reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
         update.message.reply_text('Miltä ajalta haluat tapahtumia:', reply_markup=reply_markup)
+
 
 
 # This function will call fetch_by_date and send the user three events on a given date

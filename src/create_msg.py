@@ -30,3 +30,10 @@ def create_message_text(event):
         msg_text = msg_text + '\n\n<a href=\"' + event.link + '\">Lue lisää...</a>'
 
     return msg_text
+
+
+def create_message_train(train):
+    msg_text = '<b>' + 'From: ' + train.departure + ', track ' + train.fromTrack + ' to ' + train.arrival + ', track ' + train.toTrack + '</b>' \
+        + '\nJunanumero: ' + train.train_type + str(train.number) \
+        + '\nAika: ' + str(train.datetime) + ', junan tyyppi: ' + train.train_category + ', linja: ' + train.line_id
+    return msg_text
