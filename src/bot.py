@@ -45,11 +45,11 @@ def start(update, context):
 
 
 # a function to search events by keyword
-def search(update, context):
-    searchresult = fetch_query(all_events, context.args[0])
+def search(update, context, search_word):
+    search_result = fetch_query(all_events, search_word)
     # Search results should be looped and send more results to user, but for now it only send first one's name
-    if len(searchresult) > 0:
-        for item in searchresult:
+    if len(search_result) > 0:
+        for item in search_result:
             if item.img_link is not None:
                 context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
                                        caption=create_message_text(item), parse_mode=telegram.ParseMode.HTML)
@@ -169,7 +169,7 @@ def cal_inline_handler(update, context):
 
 
 # This function handles the user pressing a button on an inline keyboard
-def button_inline_handler(update, context):
+def searchdate_inline_handler(update, context):
     def date_to_str(daysdelta=0):
         date = datetime.now() + timedelta(days=daysdelta)
         return date.strftime('%d.%m.%Y')
@@ -202,6 +202,42 @@ def handle_search_date(update, context):
         reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
         update.message.reply_text('Miltä ajalta haluat tapahtumia:', reply_markup=reply_markup)
 
+
+# This function handles the user pressing a button on an inline keyboard with tag selection
+def search_inline_handler(update, context):
+    query = update.callback_query
+    if query.data == 't1':
+        query.edit_message_text(text="Etsitään tapahtumia tagilla 'music'...")
+        search(update, context, 'music')
+        query.edit_message_text(text="Tapahtumat tagilla 'music': ")
+    elif query.data == 't2':
+        query.edit_message_text(text="Etsitään tapahtumia tagilla 'theatre'...")
+        search(update, context, 'theatre')
+        query.edit_message_text(text="Tapahtumat tagilla 'theatre': ")
+    elif query.data == 't3':
+        query.edit_message_text(text="Etsitään tapahtumia tagilla 'culture'...")
+        search(update, context, 'culture')
+        query.edit_message_text(text="Tapahtumat tagilla 'culture': ")
+
+
+def handle_search(update, context):
+    if context.args:
+        msg = update.message.reply_text('Etsitään tapahtumia tagilla {}...'.format(' '.join(context.args)))
+        search(update, context, ' '.join(context.args))
+        msg.edit_text('Tapahtumat tagilla {}:'.format(' '.join(context.args)))
+    else:
+        # TODO: Valitse loput tagit ja toteuta ne search_inline_handleriin
+        keyboard = [[InlineKeyboardButton(text='\U0001F3B6 Music', callback_data='t1'),
+                     InlineKeyboardButton('\U0001F3AD Theatre', callback_data='t2'),
+                    InlineKeyboardButton('\U0001F3A8 Culture', callback_data='t3')],
+                    [InlineKeyboardButton(text='Tagi', callback_data='t4'),
+                     InlineKeyboardButton('Tagi', callback_data='t5'),
+                     InlineKeyboardButton('Tagi', callback_data='t6')],
+                    [InlineKeyboardButton(text='Tagi', callback_data='t7'),
+                     InlineKeyboardButton('Tagi', callback_data='t8'),
+                     InlineKeyboardButton('Tagi', callback_data='t9')]]
+        reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+        update.message.reply_text('Hae tapahtumaa tagilla. Suosittuja tageja:', reply_markup=reply_markup)
 
 
 # This function will call fetch_by_date and send the user three events on a given date

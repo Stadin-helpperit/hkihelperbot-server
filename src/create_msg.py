@@ -8,7 +8,7 @@ from datetime import datetime
 def create_message_text(event):
     msg_text = '<b>' + event.name + '</b>' + '\nOsoite: ' + event.address + '\n\n' + event.desc \
                + '\n\nTapahtuman tagit: ' + ', '.join(event.tags) + '\n\nAlkaa: ' + \
-               datetime_to_str(event.get_sorted_start_times()[0]) # TODO: korjaa pvm
+               datetime_to_str(event.get_sorted_start_times()[0])  # TODO: korjaa pvm
 
     # Only shows the Päättyy: ... -field if ending date exists
     if isinstance(event.end_time, datetime):
