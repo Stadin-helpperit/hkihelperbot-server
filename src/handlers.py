@@ -1,5 +1,5 @@
 from bot import start, caps, echo, search, nearby, info, handle_search_date, button_inline_handler, cal_inline_handler, \
-    trains, route, stations
+    trains, route, stations, button_selection_handler
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
@@ -55,8 +55,13 @@ dispatcher.add_handler(info_handler)
 searchdate_handler = CommandHandler('searchdate', handle_search_date)
 dispatcher.add_handler(searchdate_handler)
 
+# handler for event routing button
+updater.dispatcher.add_handler(CallbackQueryHandler(button_selection_handler, pattern='s'))
+
 # handler for inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(button_inline_handler, pattern='i'))
 
 # handler for calendar inline buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(cal_inline_handler))
+
+

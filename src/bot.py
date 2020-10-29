@@ -54,20 +54,61 @@ def trains(update, context):
                                  parse_mode=telegram.ParseMode.HTML)
 
 
+def button_selection_handler(update, context):
+    query = update.callback_query
+    if query.data == 's1':
+        query.edit_message_text(text="Etsitään asemia A-F... ")
+        scope = 'a-f'
+        stations_selection(update, context, scope)
+        query.edit_message_text(text="ASEMAT: ")
+    elif query.data == 's2':
+        query.edit_message_text(text="Etsitään asemia G-N... ")
+        scope = 'g-n'
+        stations_selection(update, context, scope)
+        query.edit_message_text(text="ASEMAT: ")
+    elif query.data == 's3':
+        query.edit_message_text(text="Etsitään asemia O-Ö... ")
+        scope = 'o-ö'
+        stations_selection(update, context, scope)
+        query.edit_message_text(text="ASEMAT: ")
+
+
 # Function that lists all station shortcodes with matching stations for user to use with /trains command
 def stations(update, context):
+    keyboard = [[InlineKeyboardButton(text='A-F', callback_data='s1'),
+                 InlineKeyboardButton("G-N", callback_data='s2')],
+                [InlineKeyboardButton("O-Ö", callback_data='s3')]]
+    reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+    update.message.reply_text('Valitse asemalyhenteet väliltä:', reply_markup=reply_markup)
+
+
+def stations_selection(update, context, scope):
     stationslist = fetch_stations()
     msg_text = ''
-    for item in range(len(stationslist[:20])):
-        if stationslist[item]['type'] == 'STATION':
-            msg_text = (msg_text + ', ' + stationslist[item]['stationName'] + ' - ' + stationslist[item]['stationShortCode'] + '\n')
-        else:
-            continue
+    context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
+    if scope == 'a-f':
+        for item in stationslist[:20]:
+            if item['type'] == 'STATION':
+                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
+            else:
+                continue
+    elif scope == 'g-n':
+        for item in stationslist[21:40]:
+            if item['type'] == 'STATION':
+                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
+            else:
+                continue
+    elif scope == 'o-ö':
+        for item in stationslist[41:60]:
+            if item['type'] == 'STATION':
+                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
+            else:
+                continue
+
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
 
 
 def route(update, context):
-    routeresult = fetch_hsl_route()
     routemsg = create_route_msg()
     for item in range(len(routemsg)):
         context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg[item])
@@ -154,6 +195,7 @@ def handle_search_date(update, context):
                     [InlineKeyboardButton("Valitse päivämäärä", callback_data='i3')]]
         reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
         update.message.reply_text('Miltä ajalta haluat tapahtumia:', reply_markup=reply_markup)
+
 
 
 # This function will call fetch_by_date and send the user three events on a given date
