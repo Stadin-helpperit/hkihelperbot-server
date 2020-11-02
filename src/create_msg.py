@@ -44,7 +44,9 @@ def create_message_text_activity(activity):
     msg_text = '<b>' + activity.name + '</b>' + '\nOsoite: ' + activity.address + '\n\n' + cleanhtml(activity.desc) \
                + '\n\nTapahtuman tagit: ' + ', '.join(activity.tags) + '\n\nMissä ja milloin: ' + activity.where_and_when \
               + '\n\nKesto: ' + activity.duration
+
     return msg_text
+
             # Poistaa ylimääräiset html-tagit body-tekstistä
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
