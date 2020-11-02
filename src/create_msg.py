@@ -1,4 +1,4 @@
-from create_event import datetime_to_str
+from utilities import datetime_to_str
 from datetime import datetime
 import re
 

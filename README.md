@@ -19,10 +19,21 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 
 The bot is written in Python and it will be hosted on a Raspberry Pi server. 
 
-## How to use?
+## How to install?
 
 Clone this repository and open a terminal window in a location you wish to have the project in. Then run Bot.py.
 
+You'll need Python 3.8.5.
+
+Cloning the repository to your machine:
 >`git clone https://github.com/Stadin-helpperit/hkihelperbot-server.git`
 >
+Installing the dependencies:
+>`pip install -r requirements.txt`
+>
+Now you need to make a .env file for your environment variables and add your Telegram Bot API Key to there. You can use the following command, just replace <YOUR API KEY> with your own API key. You can get your own API key from Telegram's [@BotFather](https://t.me/BotFather).
+>
+>`echo API_TOKEN = "<YOUR API KEY>" > .env`
+>
+Now you can run the app with the following command:
 >`python bot.py`
