@@ -75,6 +75,7 @@ Temporary Items
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 .idea
+.idea/misc.xml
 
 # Gradle
 .idea/**/gradle.xml
