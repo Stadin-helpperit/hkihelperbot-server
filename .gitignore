@@ -74,6 +74,7 @@ Temporary Items
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea
 
 # Gradle
 .idea/**/gradle.xml
@@ -170,6 +171,10 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+bin
+lib
+lib64
+pyvenv.cfg
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
