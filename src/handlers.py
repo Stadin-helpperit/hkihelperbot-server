@@ -1,5 +1,5 @@
 from bot import start, caps, echo, search, nearby, handle_search_date, searchdate_inline_handler, cal_inline_handler, \
-    trains, route, stations, button_selection_handler, handle_search, search_inline_handler
+    trains, route, stations, button_selection_handler, handle_search, search_inline_handler, search_activities
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
@@ -30,6 +30,10 @@ dispatcher.add_handler(echo_handler)
 # This handler listens for user's messages and calls the previously defined search function
 search_handler = CommandHandler('search', handle_search)
 dispatcher.add_handler(search_handler)
+
+# This handler listens for user's messages and calls the previously defined search function
+activity_handler = CommandHandler('activities', search_activities)
+dispatcher.add_handler(activity_handler)
 
 # This handler listens for user's messages and calls the previously defined trains function
 trains_handler = CommandHandler('trains', trains)

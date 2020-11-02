@@ -1,11 +1,12 @@
 from create_event import create_event, str_to_datetime
 from create_train import create_train
+from create_activity import create_activity
 import requests
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
 
 
-# Function that retches data based on a keyword sent by the user and returns some matching events
+# Function that fetches data based on a keyword sent by the user and returns some matching events
 def fetch_query(all_events, keyword):
     def filter_events_by_tag(item):
         if keyword in item.tags:
@@ -29,6 +30,10 @@ def fetch_query(all_events, keyword):
     return query_result_events
 
 
+
+    
+
+
 # Function that fetches a list of events near the location sent by user and returns three of them
 def fetch_nearby(lat, lon):
     url = 'http://open-api.myhelsinki.fi/v1/events/?distance_filter=' + str(lat) + '%2C' + str(lon) + '%2C2'
@@ -44,6 +49,24 @@ def fetch_nearby(lat, lon):
     print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time)
 
     return events
+
+
+    # Function that fetches a list of activities near the location sent by user and returns three of them
+def fetch_activities_by_keyword(keyword):
+    url = 'http://open-api.myhelsinki.fi/v1/activities/?tags_search=' + keyword 
+    data = requests.get(url).json()
+    results = data['data']
+    sample_arr = results[:3]
+    print(sample_arr)
+    activities = []
+
+    for item in sample_arr:
+        activity = create_activity(item)
+        activities.append(activity)
+
+    print(activities[0].name, activities[0].lat, activities[0].lon, activities[0].address)
+
+    return activities
 
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message

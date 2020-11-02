@@ -1,8 +1,8 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
-from fetch_data import fetch_all, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations
+from fetch_data import fetch_all, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, fetch_activities_by_keyword
 from fetch_hsl_data import fetch_hsl_route, create_route_msg
-from create_msg import create_message_text, create_message_train
+from create_msg import create_message_text, create_message_train, create_message_text_activity
 import telegram
 import threading
 import telegramcalendar
@@ -60,6 +60,29 @@ def search(update, context, search_word):
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text='No events matching keyword. Use command like /search (keyword)')
+
+
+
+# a function to search activities by keyword
+def search_activities(update, context):
+    search_result = fetch_activities_by_keyword(context.args[0])
+    # Search results should be looped and send more results to user, but for now it only send first one's name
+    if len(search_result) > 0:
+        for item in search_result:
+            msg_text = create_message_text_activity(item)
+            # Media limit with image = 1024 characters, remove the image from results if msg_text > 1024
+            if item.img_link is not None and len(msg_text) < 1024:
+                context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
+                                       caption=msg_text, parse_mode=telegram.ParseMode.HTML)
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text
+                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text='No events matching keyword. Use command like /search (keyword)')
+
+                                 
 
 
 # Function that echoes the user's messages
