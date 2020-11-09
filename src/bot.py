@@ -1,14 +1,17 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
-from fetch_data import fetch_all, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, fetch_activities_by_keyword
+from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
+    fetch_activities_by_keyword, fetch_all_activities
 from fetch_hsl_data import fetch_hsl_route, create_route_msg
 from create_msg import create_message_text, create_message_train, create_message_text_activity
+from utilities import create_tag_keyboard_markup
 import telegram
 import threading
 import telegramcalendar
 
 # a processed list of all events to be fetched once an hour and should be used by all functions
 all_events = []
+all_activities = []
 
 
 # --- SCHEDULED FUNCTIONS TO FETCH AND PROCESS DATA FROM MYHELSINKI API
@@ -21,7 +24,9 @@ WAIT_SECONDS = 3600
 def sched_fetch():
     print('Scheduled fetch beginning')
     global all_events
-    all_events = fetch_all()
+    global all_activities
+    all_events = fetch_all_events()
+    all_activities = fetch_all_activities()
     print('Scheduled fetch done')
 
     """for item in all_events:
@@ -38,6 +43,27 @@ sched_fetch()
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
 
+def handle_search(update, context):
+    keyboard = [[InlineKeyboardButton(text='Events', callback_data='k1'),
+                 InlineKeyboardButton(text='Activities', callback_data='k2'),
+                 InlineKeyboardButton(text='Places', callback_data='k3')]]
+
+    reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+    update.message.reply_text('Do you want to search for events, activities or places?', reply_markup=reply_markup)
+
+
+def search_inline_handler(update, context):
+    query = update.callback_query
+    if query.data == 'k1':
+        handle_search_events(update, context)
+        query.edit_message_text(text="Etsitään tapahtumia... ")
+    elif query.data == 'k2':
+        handle_search_activities(update, context)
+        query.edit_message_text(text="Etsitään aktiviteetteja... ")
+    elif query.data == 'k3':
+        # TODO: places
+        pass
+
 
 # Function that sends a message ""I'm a bot, please talk to me!""
 def start(update, context):
@@ -45,7 +71,7 @@ def start(update, context):
 
 
 # a function to search events by keyword
-def search(update, context, search_word):
+def search_events(update, context, search_word):
     search_result = fetch_query(all_events, search_word)
     # Search results should be looped and send more results to user, but for now it only send first one's name
     if len(search_result) > 0:
@@ -62,9 +88,27 @@ def search(update, context, search_word):
                                  text='No events matching keyword. Use command like /search (keyword)')
 
 
+def handle_search_activities(update, context):
+    print(update)
+    # create tag keyboard markup with parameter datatype as 'a' for activities
+    tag_keyboard = create_tag_keyboard_markup('a')
+
+    # if the user gives a parameter the search_activities() function is called
+    if context.args:
+        msg = update.message.reply_text('Etsitään aktiviteetteja tagilla {}...'.format(' '.join(context.args)))
+        search_activities(update, context, ' '.join(context.args))
+        msg.edit_text('Tapahtumat tagilla {}:'.format(' '.join(context.args)))
+    # else will send the tag keyboard
+    else:
+        reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text='Hae aktiviteetteja tagilla. Suosittuja tageja:', reply_markup=reply_markup)
+        # update.message.reply_text('Hae aktiviteetteja tagilla. Suosittuja tageja:', reply_markup=reply_markup)
+
+
 # a function to search activities by keyword
-def search_activities(update, context):
-    search_result = fetch_activities_by_keyword(context.args[0])
+def search_activities(update, context, search_word):
+    search_result = fetch_activities_by_keyword(all_activities, search_word)
     # Search results should be looped and send more results to user, but for now it only send first one's name
     if len(search_result) > 0:
         for item in search_result:
@@ -224,49 +268,42 @@ def handle_search_date(update, context):
 
 
 # This function handles the user pressing a button on an inline keyboard with tag selection
-def search_inline_handler(update, context):
+def search_event_inline_handler(update, context):
     query = update.callback_query
 
     search_word = query.data.split('_')[1]
 
     query.edit_message_text(text="Etsitään tapahtumia tagilla '{}'...".format(search_word))
-    search(update, context, search_word)
+    search_events(update, context, search_word)
     query.edit_message_text(text="Tapahtumat tagilla '{}': ".format(search_word))
 
 
-# This function handles the /serach -command and either passes the parameter given by user to the search() function
-# or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
-def handle_search(update, context):
-    # List of popular tags that is used when the /search-command is invoked without a parameter
-    popular_tags = [['music', '\U0001F3B6 Musiikki'],
-                    ['theatre', '\U0001F3AD Teatteri'],
-                    ['culture', '\U0001F3A8 Kulttuuri'],
-                    ['sports', '\U000026BD Urheilu'],
-                    ['museums', '\U0001F3DB Museot'],
-                    ['nature', '\U0001F332 Luonto'],
-                    ['food', '\U0001F372 Ruoka'],
-                    ['families with children', '\U0001F46A Perheille'],
-                    ['workshops', '\U0001F6E0 Työpajat']]
+# This function handles the user pressing a button on an inline keyboard with tag selection
+def search_activities_inline_handler(update, context):
+    query = update.callback_query
 
-    # some functionality to turn the list of tags into telegram keyboard markup
-    tag_keyboard = []
-    tag_keyboard_row = []
-    for tag in popular_tags:
-        new_button = InlineKeyboardButton(text=tag[1], callback_data='t_' + tag[0])
-        tag_keyboard_row.append(new_button)
-        if len(tag_keyboard_row) == 3:
-            tag_keyboard.append(tag_keyboard_row)
-            tag_keyboard_row = []
+    search_word = query.data.split('_')[1]
+
+    query.edit_message_text(text="Etsitään aktiviteetteja tagilla '{}'...".format(search_word))
+    search_activities(update, context, search_word)
+    query.edit_message_text(text="Aktiviteetit tagilla '{}': ".format(search_word))
+
+
+# This function handles the /search -command and either passes the parameter given by user to the search() function
+# or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
+def handle_search_events(update, context):
+    # create tag keyboard markup with parameter datatype as 't' for events
+    tag_keyboard = create_tag_keyboard_markup('t')
 
     # if the user gives a parameter the search() function is called
     if context.args:
         msg = update.message.reply_text('Etsitään tapahtumia tagilla {}...'.format(' '.join(context.args)))
-        search(update, context, ' '.join(context.args))
+        search_events(update, context, ' '.join(context.args))
         msg.edit_text('Tapahtumat tagilla {}:'.format(' '.join(context.args)))
     # else will send the tag keyboard
     else:
         reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
-        update.message.reply_text('Hae tapahtumaa tagilla. Suosittuja tageja:', reply_markup=reply_markup)
+        context.bot.send_message(chat_id=update.effective_chat.id, text='Hae tapahtumaa tagilla. Suosittuja tageja:', reply_markup=reply_markup)
 
 
 # This function will call fetch_by_date and send the user three events on a given date
