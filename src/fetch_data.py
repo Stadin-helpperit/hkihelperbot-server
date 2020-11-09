@@ -1,6 +1,7 @@
 from create_event import create_event, str_to_datetime
 from create_train import create_train
 from create_activity import create_activity
+from create_place import create_place
 import requests
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
@@ -67,6 +68,23 @@ def fetch_activities_by_keyword(keyword):
     print(activities[0].name, activities[0].lat, activities[0].lon, activities[0].address)
 
     return activities
+
+    # Function that fetches a list of activities near the location sent by user and returns three of them
+def fetch_places(keyword):
+    url = 'http://open-api.myhelsinki.fi/v1/places/?tags_search=' + keyword
+    data = requests.get(url).json()
+    results = data['data']
+    sample_arr = results[:3]
+    print(sample_arr)
+    places = []
+
+    for item in sample_arr:
+        place = create_place(item)
+        places.append(place)
+
+    print(places[0].name, places[0].lat, places[0].lon, places[0].address)
+
+    return places
 
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
