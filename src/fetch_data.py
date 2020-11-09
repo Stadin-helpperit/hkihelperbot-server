@@ -31,10 +31,6 @@ def fetch_query(all_events, keyword):
     return query_result_events
 
 
-
-    
-
-
 # Function that fetches a list of events near the location sent by user and returns three of them
 def fetch_nearby(lat, lon):
     url = 'http://open-api.myhelsinki.fi/v1/events/?distance_filter=' + str(lat) + '%2C' + str(lon) + '%2C2'
@@ -52,9 +48,20 @@ def fetch_nearby(lat, lon):
     return events
 
 
-    # Function that fetches a list of activities near the location sent by user and returns three of them
-def fetch_activities_by_keyword(keyword):
-    url = 'http://open-api.myhelsinki.fi/v1/activities/?tags_search=' + keyword 
+# Function that fetches a list of activities near the location sent by user and returns three of them
+def fetch_activities_by_keyword(all_activities, keyword):
+    def filter_activities_by_tag(item):
+        if keyword in item.tags:
+            return True
+        else:
+            return False
+
+    results = list(filter(filter_activities_by_tag, all_activities))
+    query_result_activities = results[:3]
+
+    return query_result_activities
+
+    """url = 'http://open-api.myhelsinki.fi/v1/activities/?tags_search=' + keyword 
     data = requests.get(url).json()
     results = data['data']
     sample_arr = results[:3]
@@ -67,7 +74,7 @@ def fetch_activities_by_keyword(keyword):
 
     print(activities[0].name, activities[0].lat, activities[0].lon, activities[0].address)
 
-    return activities
+    return activities"""
 
     # Function that fetches a list of activities near the location sent by user and returns three of them
 def fetch_places(keyword):
@@ -121,7 +128,7 @@ def fetch_coords(address):
 
 
 # Function that fetches all events from Helsinki open API and returns the events as a list
-def fetch_all():
+def fetch_all_events():
     def get_event_name(item):
         return item.name
       
@@ -152,6 +159,20 @@ def fetch_all():
     # events.sort(key=get_event_name)
 
     return events
+
+
+# Function that fetches all activities from Helsinki open API and returns the activities as a list
+def fetch_all_activities():
+    url = 'http://open-api.myhelsinki.fi/v1/activities/'
+    data = requests.get(url).json()
+    results = data['data']
+    all_activities = []
+
+    for item in results:
+        activity = create_activity(item)
+        all_activities.append(activity)
+
+    return all_activities
 
 
 # This function fetches all events from myHelsinki-api and filters items on a given day
