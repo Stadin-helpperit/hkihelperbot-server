@@ -51,9 +51,5 @@ def create_place(item):
     for weekday in weekdays:
         place.add_open_hours("From: " + weekday['opens'] + " to: " + weekday['closes'])
 
-
-
-
-
-    # Return the created activity
-    return activity
+    # Return the created place
+    return place
