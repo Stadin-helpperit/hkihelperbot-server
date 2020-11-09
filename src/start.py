@@ -18,7 +18,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=int(port),
                           url_path=token)
-    updater.bot.setWebhook('https://yourherokuappname.herokuapp.com/' + token)
+    updater.bot.setWebhook('https://evening-everglades-42789.herokuapp.com/' + token)
 
 
 if __name__ == "__main__":
