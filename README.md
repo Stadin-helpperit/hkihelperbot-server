@@ -1,4 +1,4 @@
-# hkihelperbot-server
+# hkihelperbot-server ![Python package](https://github.com/Stadin-helpperit/hkihelperbot-server/workflows/Python%20package/badge.svg) ![CodeQL](https://github.com/Stadin-helpperit/hkihelperbot-server/workflows/CodeQL/badge.svg)
 
 Stadin Helpperit Telegram bot is a chatbot in the Telegram messaging app that utilizes open data from the [MyHelsinki Open API](http://open-api.myhelsinki.fi/).
 The bot responds to different commands and requests. 
