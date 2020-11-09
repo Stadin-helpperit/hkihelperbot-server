@@ -62,7 +62,6 @@ def search(update, context, search_word):
                                  text='No events matching keyword. Use command like /search (keyword)')
 
 
-
 # a function to search activities by keyword
 def search_activities(update, context):
     search_result = fetch_activities_by_keyword(context.args[0])
@@ -81,8 +80,6 @@ def search_activities(update, context):
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text='No events matching keyword. Use command like /search (keyword)')
-
-                                 
 
 
 # Function that echoes the user's messages
@@ -229,37 +226,46 @@ def handle_search_date(update, context):
 # This function handles the user pressing a button on an inline keyboard with tag selection
 def search_inline_handler(update, context):
     query = update.callback_query
-    if query.data == 't1':
-        query.edit_message_text(text="Etsitään tapahtumia tagilla 'music'...")
-        search(update, context, 'music')
-        query.edit_message_text(text="Tapahtumat tagilla 'music': ")
-    elif query.data == 't2':
-        query.edit_message_text(text="Etsitään tapahtumia tagilla 'theatre'...")
-        search(update, context, 'theatre')
-        query.edit_message_text(text="Tapahtumat tagilla 'theatre': ")
-    elif query.data == 't3':
-        query.edit_message_text(text="Etsitään tapahtumia tagilla 'culture'...")
-        search(update, context, 'culture')
-        query.edit_message_text(text="Tapahtumat tagilla 'culture': ")
+
+    search_word = query.data.split('_')[1]
+
+    query.edit_message_text(text="Etsitään tapahtumia tagilla '{}'...".format(search_word))
+    search(update, context, search_word)
+    query.edit_message_text(text="Tapahtumat tagilla '{}': ".format(search_word))
 
 
+# This function handles the /serach -command and either passes the parameter given by user to the search() function
+# or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
 def handle_search(update, context):
+    # List of popular tags that is used when the /search-command is invoked without a parameter
+    popular_tags = [['music', '\U0001F3B6 Musiikki'],
+                    ['theatre', '\U0001F3AD Teatteri'],
+                    ['culture', '\U0001F3A8 Kulttuuri'],
+                    ['sports', '\U000026BD Urheilu'],
+                    ['museums', '\U0001F3DB Museot'],
+                    ['nature', '\U0001F332 Luonto'],
+                    ['food', '\U0001F372 Ruoka'],
+                    ['families with children', '\U0001F46A Perheille'],
+                    ['workshops', '\U0001F6E0 Työpajat']]
+
+    # some functionality to turn the list of tags into telegram keyboard markup
+    tag_keyboard = []
+    tag_keyboard_row = []
+    for tag in popular_tags:
+        new_button = InlineKeyboardButton(text=tag[1], callback_data='t_' + tag[0])
+        tag_keyboard_row.append(new_button)
+        if len(tag_keyboard_row) == 3:
+            tag_keyboard.append(tag_keyboard_row)
+            tag_keyboard_row = []
+
+    # if the user gives a parameter the search() function is called
     if context.args:
         msg = update.message.reply_text('Etsitään tapahtumia tagilla {}...'.format(' '.join(context.args)))
         search(update, context, ' '.join(context.args))
         msg.edit_text('Tapahtumat tagilla {}:'.format(' '.join(context.args)))
+    # else will send the tag keyboard
     else:
-        # TODO: Valitse loput tagit ja toteuta ne search_inline_handleriin
-        keyboard = [[InlineKeyboardButton(text='\U0001F3B6 Music', callback_data='t1'),
-                     InlineKeyboardButton('\U0001F3AD Theatre', callback_data='t2'),
-                    InlineKeyboardButton('\U0001F3A8 Culture', callback_data='t3')],
-                    [InlineKeyboardButton(text='Tagi', callback_data='t4'),
-                     InlineKeyboardButton('Tagi', callback_data='t5'),
-                     InlineKeyboardButton('Tagi', callback_data='t6')],
-                    [InlineKeyboardButton(text='Tagi', callback_data='t7'),
-                     InlineKeyboardButton('Tagi', callback_data='t8'),
-                     InlineKeyboardButton('Tagi', callback_data='t9')]]
-        reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+        reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
         update.message.reply_text('Hae tapahtumaa tagilla. Suosittuja tageja:', reply_markup=reply_markup)
 
 
