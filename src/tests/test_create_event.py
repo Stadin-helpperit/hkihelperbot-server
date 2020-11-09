@@ -1,7 +1,10 @@
 import json
-from ..create_event import create_event
+from pathlib import Path
+from create_event import create_event
 
-with open("./test_events.json") as jsonfile:
+path = Path(__file__).parent / "./test_events.json"
+
+with open(path) as jsonfile:
     data = json.load(jsonfile)
 
 
@@ -22,7 +25,7 @@ def test_create_event_no_location():
 
 def test_create_event_no_tags():
     test_event = create_event(data[3])
-    assert test_event.tags == 'Tapahtumalla ei tageja'
+    assert test_event.tags == ['Tapahtumalla ei tageja']
 
 
 def test_create_event_no_address():
