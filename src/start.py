@@ -15,12 +15,10 @@ def main():
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
     # starts the polling of incoming messages
-    # updater.start_polling()
-
     updater.start_webhook(listen="0.0.0.0",
                           port=int(port),
                           url_path=token)
-    updater.bot.setWebhook('https://evening-everglades-42789.herokuapp.com/' + token)
+    updater.bot.setWebhook('https://yourherokuappname.herokuapp.com/' + token)
 
 
 if __name__ == "__main__":
