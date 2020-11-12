@@ -97,10 +97,10 @@ def create_route_msg():
         else:
             route_a.append('kävely')
 
-        steps.append(str('Part of the trip, at: ' + start_times[i] + ' from place: ' + a + ' To: ' + b + ' at: ' + end_times[i] + ' - kulkuvälineellä: ' + route_a[i]))
+        steps.append(str('Part of the trip, at: ' + start_times[i] + ' from place: ' + a + ' To: ' + b + ' at: ' + end_times[i] + ' - Mode of transport: ' + route_a[i]))
 
     # print(result)
-    steps.append(str('Matkan kokonaishinta: ' + str(fare / 100) + ' Euroa'))
+    steps.append(str('Total fare of the trip: ' + str(fare / 100) + ' Euros'))
 
     return steps
 
