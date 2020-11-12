@@ -65,6 +65,15 @@ def search_inline_handler(update, context):
         pass
 
 
+# Handles the button to check location for result after each Event, Activity, or Place
+def location_inline_handler(update, context):
+    query = update.callback_query
+    if query.data == 'l1':
+        # to do: handle get events/activitys.. location and send it to user via bot.send_location
+        query.edit_message_text(text="Etsitään sijainnit hakutuloksille... ")
+    pass
+
+
 # Function that sends a message ""I'm a bot, please talk to me!""
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
@@ -193,7 +202,7 @@ def stations_selection(update, context, scope):
                 continue
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
-    handle_lookup_station_loc(update, context, stations_list)
+    handle_lookup_station_loc(update, context)
 
 
 # Function that prints inline button for user to look up locations
