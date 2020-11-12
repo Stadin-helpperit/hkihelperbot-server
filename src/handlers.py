@@ -1,8 +1,9 @@
 from bot import start, caps, echo, search_events, nearby, handle_search_date, searchdate_inline_handler, \
     cal_inline_handler, \
-    trains, route, stations, button_selection_handler, handle_search_events, search_event_inline_handler, \
+    trains, route, stations, stations_button_selection_handler, handle_search_events, search_event_inline_handler, \
     search_activities, \
-    handle_search_activities, search_activities_inline_handler, search_inline_handler, handle_search
+    handle_search_activities, search_activities_inline_handler, search_inline_handler, handle_search, \
+    station_info_inline_handler
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
@@ -65,8 +66,11 @@ dispatcher.add_handler(searchdate_handler)
 # handler for /search inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(search_inline_handler, pattern='k'))
 
-# handler for event routing button
-updater.dispatcher.add_handler(CallbackQueryHandler(button_selection_handler, pattern='s'))
+# handler for /stations inline keyboard buttons
+updater.dispatcher.add_handler(CallbackQueryHandler(stations_button_selection_handler, pattern='s'))
+
+# handler for stations location lookup inline keyboard button
+updater.dispatcher.add_handler(CallbackQueryHandler(station_info_inline_handler, pattern='w'))
 
 # handler for /search inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(search_event_inline_handler, pattern='t'))

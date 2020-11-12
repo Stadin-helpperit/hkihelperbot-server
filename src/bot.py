@@ -133,13 +133,14 @@ def echo(update, context):
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
 def trains(update, context):
-    trainsresult = fetch_trains(context.args)
-    for item in trainsresult:
+    trains_result = fetch_trains(context.args)
+    for item in trains_result:
         context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
                                  parse_mode=telegram.ParseMode.HTML)
 
 
-def button_selection_handler(update, context):
+# Function that handles selection callback query for inline keyboard stations scope selection
+def stations_button_selection_handler(update, context):
     query = update.callback_query
     if query.data == 's1':
         query.edit_message_text(text="Etsitään asemia A-F... ")
@@ -167,29 +168,64 @@ def stations(update, context):
     update.message.reply_text('Valitse asemalyhenteet väliltä:', reply_markup=reply_markup)
 
 
+# Function that sends selected scope of stations and asks use if he wants location of the station on map
 def stations_selection(update, context, scope):
-    stationslist = fetch_stations()
+    stations_list = fetch_stations()
     msg_text = ''
     context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
     if scope == 'a-f':
-        for item in stationslist[:20]:
+        for item in stations_list[:20]:
             if item['type'] == 'STATION':
                 msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
             else:
                 continue
     elif scope == 'g-n':
-        for item in stationslist[21:40]:
+        for item in stations_list[21:40]:
             if item['type'] == 'STATION':
                 msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
             else:
                 continue
     elif scope == 'o-ö':
-        for item in stationslist[41:60]:
+        for item in stations_list[41:60]:
             if item['type'] == 'STATION':
                 msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
             else:
                 continue
 
+    context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
+    handle_lookup_station_loc(update, context, stations_list)
+
+
+# Function that prints inline button for user to look up locations
+def handle_lookup_station_loc(update, context):
+    # inline-button for location lookup.
+    loc_search_btn = [[InlineKeyboardButton(text='Sijainti', callback_data='w1')]]
+
+    reply_markup = InlineKeyboardMarkup(loc_search_btn, resize_keyboard=True, one_time_keyboard=True)
+    context.bot.send_message(chat_id=update.effective_chat.id, text='Etsi aseman sijainti?', reply_markup=reply_markup)
+
+
+# Function that handles callback query for inline button asking if user wants selected stations locations
+def station_info_inline_handler(update, context):
+    query = update.callback_query
+    if query.data == 'w1':
+        query.edit_message_text(text="Etsitään asemien sijainnit... ")
+        station_locations_search(update, context)
+
+
+# TEST CODE: Function that sends some locations to user if user chooses so from the inline button
+def station_locations_search(update, context):
+    stations_list = fetch_stations()
+    print(update)
+    msg_text = ''
+
+    for item in stations_list[:5]:
+        if item['type'] == 'STATION':
+            msg_text = (msg_text + 'Station: ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n' +
+                        'Station location: ' + str(item['longitude']) + ' and ' + str(item['latitude']) + '\n')
+            context.bot.send_location(chat_id=update.effective_chat.id, latitude=item['latitude'], longitude=item['longitude'])
+        else:
+            continue
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
 
 
