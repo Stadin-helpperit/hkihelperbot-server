@@ -213,7 +213,7 @@ def station_info_inline_handler(update, context):
         station_locations_search(update, context)
 
 
-# TEST CODE: Function that sends some locations to user if user chooses so from the inline button
+# TEST CODE for this functionality: Function that sends some locations to user if user chooses so from the inline button
 def station_locations_search(update, context):
     stations_list = fetch_stations()
     print(update)
