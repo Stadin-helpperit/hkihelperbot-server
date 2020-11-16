@@ -1,14 +1,14 @@
 # Universal class for Place instances in Helsinki API
 
 class Place:
-    def __init__(self, name='', address='', desc='', lat=0.0, lon=0.0, open_hours='', tags='', link=None, img_link=None):
+    def __init__(self, name='', address='', desc='', lat=0.0, lon=0.0, link=None, img_link=None):
         self.name = name
         self.address = address
         self.desc = desc
         self.lat = lat
         self.lon = lon
-        self.open_hours = open_hours
-        self.tags = tags
+        self.open_hours = []
+        self.tags = []
         self.link = link
         self.img_link = img_link
 

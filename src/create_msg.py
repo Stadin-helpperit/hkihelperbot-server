@@ -40,14 +40,24 @@ def create_message_train(train):
         + '\nAika: ' + str(train.datetime) + ', junan tyyppi: ' + train.train_category + ', linja: ' + train.line_id
     return msg_text
 
+
 def create_message_text_activity(activity):
     msg_text = '<b>' + activity.name + '</b>' + '\nOsoite: ' + activity.address + '\n\n' + cleanhtml(activity.desc) \
-               + '\n\nTapahtuman tagit: ' + ', '.join(activity.tags) + '\n\nMissä ja milloin: ' + activity.where_and_when \
+               + '\n\nAktiviteetin tagit: ' + ', '.join(activity.tags) + '\n\nMissä ja milloin: ' + activity.where_and_when \
               + '\n\nKesto: ' + activity.duration
 
     return msg_text
 
-            # Poistaa ylimääräiset html-tagit body-tekstistä
+
+def create_message_text_place(place):
+    msg_text = '<b>' + place.name + '</b>' + '\nOsoite: ' + place.address + '\n\n' + cleanhtml(place.desc) \
+                   + '\n\nPaikan tagit: ' + ', '.join(
+            place.tags)
+
+    return msg_text
+
+
+# Poistaa ylimääräiset html-tagit body-tekstistä
 def cleanhtml(raw_html):
     cleanr = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
     cleantext = re.sub(cleanr, '', raw_html)
