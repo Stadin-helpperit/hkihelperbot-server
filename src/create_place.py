@@ -1,5 +1,6 @@
 from classes.Place import Place
 
+
 def create_place(item):
 
      # Create an empty activity
@@ -46,10 +47,6 @@ def create_place(item):
         if item['description']['images'][0]['url'] is not None and '{' not in item['description']['images'][0]['url']:
             place.img_link = item['description']['images'][0]['url']
 
-    # Place's opening hours from every week day
-    weekdays = item['opening_hours']['hours']
-    for weekday in weekdays:
-        place.add_open_hours("From: " + weekday['opens'] + " to: " + weekday['closes'])
 
     # Return the created place
     return place

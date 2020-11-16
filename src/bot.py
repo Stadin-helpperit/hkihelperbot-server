@@ -1,9 +1,9 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
 from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
-    fetch_activities_by_keyword, fetch_all_activities
+    fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
 from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
-from create_msg import create_message_text, create_message_train, create_message_text_activity
+from create_msg import create_message_text, create_message_train, create_message_text_activity, create_message_text_place
 from utilities import create_tag_keyboard_markup
 import telegram
 import threading
@@ -12,7 +12,7 @@ import telegramcalendar
 # a processed list of all events to be fetched once an hour and should be used by all functions
 all_events = []
 all_activities = []
-
+all_places = []
 
 # --- SCHEDULED FUNCTIONS TO FETCH AND PROCESS DATA FROM MYHELSINKI API
 
@@ -25,8 +25,10 @@ def sched_fetch():
     print('Scheduled fetch beginning')
     global all_events
     global all_activities
+    global all_places
     all_events = fetch_all_events()
     all_activities = fetch_all_activities()
+    all_places = fetch_all_places()
     print('Scheduled fetch done')
 
     """for item in all_events:
@@ -61,8 +63,8 @@ def search_inline_handler(update, context):
         handle_search_activities(update, context)
         query.edit_message_text(text="Etsitään aktiviteetteja... ")
     elif query.data == 'k3':
-        # TODO: places
-        pass
+        handle_search_places(update, context)
+        query.edit_message_text(text="Etsitään paikkoja...")
 
 
 # Handles the button to check location for result after each Event, Activity, or Place
@@ -133,6 +135,26 @@ def search_activities(update, context, search_word):
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text='No events matching keyword. Use command like /search (keyword)')
+
+
+# a function to search places by keyword
+def search_places(update, context, search_word):
+    search_result = fetch_places_by_keyword(all_places, search_word)
+    # Search results should be looped and send more results to user, but for now it only send first one's name
+    if len(search_result) > 0:
+        for item in search_result:
+            msg_text = create_message_text_place(item)
+            # Media limit with image = 1024 characters, remove the image from results if msg_text > 1024
+            if item.img_link is not None and len(msg_text) < 1024:
+                context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
+                                       caption=msg_text, parse_mode=telegram.ParseMode.HTML)
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text
+                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text='No places matching keyword.')
 
 
 # Function that echoes the user's messages
@@ -350,6 +372,18 @@ def search_activities_inline_handler(update, context):
     query.edit_message_text(text="Aktiviteetit tagilla '{}': ".format(search_word))
 
 
+# This function handles the user pressing a button on an inline keyboard with tag selection
+def search_places_inline_handler(update, context):
+    query = update.callback_query
+
+    search_word = query.data.split('_')[1]
+
+    query.edit_message_text(text="Etsitään paikkoja tagilla '{}'...".format(search_word))
+    print("DEBUG: SELECTED PLACES")
+    search_places(update, context, search_word)
+    query.edit_message_text(text="Paikat tagilla '{}': ".format(search_word))
+
+
 # This function handles the /search -command and either passes the parameter given by user to the search() function
 # or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
 def handle_search_events(update, context):
@@ -365,6 +399,24 @@ def handle_search_events(update, context):
     else:
         reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
         context.bot.send_message(chat_id=update.effective_chat.id, text='Hae tapahtumaa tagilla. Suosittuja tageja:', reply_markup=reply_markup)
+
+
+# This function handles the /search -command and either passes the parameter given by user to the search() function
+# or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
+def handle_search_places(update, context):
+    # create tag keyboard markup with parameter datatype as 'p' for places
+    tag_keyboard = create_tag_keyboard_markup('p')
+
+    # if the user gives a parameter the search() function is called
+    if context.args:
+        msg = update.message.reply_text('Etsitään paikkoja tagilla {}...'.format(' '.join(context.args)))
+        search_places(update, context, ' '.join(context.args))
+        msg.edit_text('Paikat tagilla {}:'.format(' '.join(context.args)))
+    # else will send the tag keyboard
+    else:
+        reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
+        context.bot.send_message(chat_id=update.effective_chat.id, text='Hae paikkoja tagilla. Suosittuja tageja:',
+                                 reply_markup=reply_markup)
 
 
 # This function will call fetch_by_date and send the user three events on a given date

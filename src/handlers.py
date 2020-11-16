@@ -78,10 +78,13 @@ updater.dispatcher.add_handler(CallbackQueryHandler(search_event_inline_handler,
 # handler for /search_activities inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(search_activities_inline_handler, pattern='a'))
 
+# handler for /search_places inline keyboard buttons
+updater.dispatcher.add_handler(CallbackQueryHandler(search_activities_inline_handler, pattern='p'))
+
 # handler for /searchdate inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(searchdate_inline_handler, pattern='i'))
 
-# handler for searched events, activ, or places results locations lookup inline keyboard button
+# handler for searched events, activ, or places results locations lookup inline keyboard button "Show location"
 updater.dispatcher.add_handler(CallbackQueryHandler(location_inline_handler, pattern='l'))
 
 # handler for calendar inline buttons
