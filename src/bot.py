@@ -2,7 +2,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
 from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
     fetch_activities_by_keyword, fetch_all_activities
-from fetch_hsl_data import fetch_hsl_route, create_route_msg
+from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
 from create_msg import create_message_text, create_message_train, create_message_text_activity
 from utilities import create_tag_keyboard_markup
 import telegram
@@ -38,7 +38,7 @@ def sched_fetch():
 
 
 # initial fetch when starting the bot
-sched_fetch()
+#sched_fetch()
 
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
@@ -239,10 +239,26 @@ def station_locations_search(update, context):
 
 
 def route(update, context):
-    routemsg = create_route_msg()
-    for item in range(len(routemsg)):
-        context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg[item])
+    if context.args:
+        to_index = context.args.index('to')
+        from_name = '%20'.join(context.args[0:to_index])
+        to_name = '%20'.join(context.args[to_index + 1:])
+        from_address_and_loc = fetch_search_address(from_name)
+        to_address_and_loc = fetch_search_address(to_name)
 
+        print(from_address_and_loc + ':::' + to_address_and_loc)
+
+        hsl_fetch_result = fetch_hsl_route(from_address_and_loc, to_address_and_loc)
+    else:
+        # TODO: /route command should also work without parameters
+        return 0
+
+    if hsl_fetch_result['data']['plan']['itineraries']:
+        routemsg = create_route_msg(hsl_fetch_result)
+    else:
+        routemsg = 'Reittiä ei löytynyt'
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
 
 # Function that sends the given text back in all caps as a message
 def caps(update, context):
