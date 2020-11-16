@@ -40,7 +40,7 @@ def sched_fetch():
 
 
 # initial fetch when starting the bot
-#sched_fetch()
+sched_fetch()
 
 
 # --- HERE WE DEFINE DIFFERENT FUNCTIONS THAT SEND MESSAGES ---
