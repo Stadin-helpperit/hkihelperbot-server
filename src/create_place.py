@@ -3,7 +3,7 @@ from classes.Place import Place
 
 def create_place(item):
 
-     # Create an empty activity
+    # Create an empty place
     place = Place()
 
     # Set the English name for the activity and if it doesn't exist choose the Finnish name
@@ -19,7 +19,6 @@ def create_place(item):
         place.address = item['location']['address']['street_address']
     else:
         place.address = 'Ei ilmoitettua osoitetta'
-
 
     # Set coordinates for the place
     place.lat = item['location']['lat']
@@ -40,7 +39,7 @@ def create_place(item):
     else:
         tags = item['tags']
         for tag in tags:
-            place.add_tag(tag['name'])
+            place.add_tag(tag['name'].lower())
 
     # Set image if it exists
     if item['description']['images']:

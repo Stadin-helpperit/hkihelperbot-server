@@ -39,7 +39,7 @@ def create_activity(item):
     else:
         tags = item['tags']
         for tag in tags:
-            activity.add_tag(tag['name'])
+            activity.add_tag(tag['name'].lower())
 
     # Set image if it exists
     if item['description']['images']:
