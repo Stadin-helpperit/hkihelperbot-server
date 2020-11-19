@@ -31,10 +31,9 @@ def sched_fetch():
     all_places = fetch_all_places()
     print('Scheduled fetch done')
 
-    """for item in all_events:
+    """for item in all_places:
         print(item.name + ' : ')
-        for time in item.start_time:
-            print(time)"""
+        print(item.tags)"""
 
     threading.Timer(WAIT_SECONDS, sched_fetch).start()
 
@@ -71,7 +70,7 @@ def search_inline_handler(update, context):
 def location_inline_handler(update, context):
     query = update.callback_query
     if query.data == 'l1':
-        # to do: handle get events/activitys.. location and send it to user via bot.send_location
+        # TODO: handle get events/activitys.. location and send it to user via bot.send_location
         query.edit_message_text(text="Etsitään sijainnit hakutuloksille... ")
     pass
 
@@ -137,6 +136,7 @@ def search_activities(update, context, search_word):
                                  text='No events matching keyword. Use command like /search (keyword)')
 
 
+# TODO: ask for further information about places (about subcategories)
 # a function to search places by keyword
 def search_places(update, context, search_word):
     search_result = fetch_places_by_keyword(all_places, search_word)
@@ -407,7 +407,7 @@ def handle_search_places(update, context):
     # create tag keyboard markup with parameter datatype as 'p' for places
     tag_keyboard = create_tag_keyboard_markup('p')
 
-    # if the user gives a parameter the search() function is called
+    # if the user gives a parameter the search_places() function is called
     if context.args:
         msg = update.message.reply_text('Etsitään paikkoja tagilla {}...'.format(' '.join(context.args)))
         search_places(update, context, ' '.join(context.args))

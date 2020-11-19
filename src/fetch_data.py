@@ -3,6 +3,7 @@ from create_train import create_train
 from create_activity import create_activity
 from create_place import create_place
 import requests
+import random
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
 
@@ -10,24 +11,17 @@ import requests
 # Function that fetches data based on a keyword sent by the user and returns some matching events
 def fetch_query(all_events, keyword):
     def filter_events_by_tag(item):
-        if keyword in item.tags:
+        if keyword.lower() in item.tags:
             return True
         else:
             return False
 
     results = list(filter(filter_events_by_tag, all_events))
-    query_result_events = results[:3]
-    """events = []
-    try:
-        for item in sample_arr:
-            event = create_event(item)
-            events.append(event)
 
-        print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time,
-              events[0].link)
-    except Exception as ex:
-        print(ex)
-        print('keyword not valid')"""
+    # shuffle the results to get different events on each call
+    random.shuffle(results)
+    query_result_events = results[:3]
+
     return query_result_events
 
 
@@ -51,13 +45,17 @@ def fetch_nearby(lat, lon):
 # Function that fetches a list of activities near the location sent by user and returns three of them
 def fetch_activities_by_keyword(all_activities, keyword):
     def filter_activities_by_tag(item):
-        if keyword in item.tags:
+        if keyword.lower() in item.tags:
             return True
         else:
             return False
 
     results = list(filter(filter_activities_by_tag, all_activities))
+
+    # Shuffle the results array to get different activities on each call
+    random.shuffle(results)
     query_result_activities = results[:3]
+
 
     return query_result_activities
 
@@ -65,13 +63,17 @@ def fetch_activities_by_keyword(all_activities, keyword):
 # Function that fetches a list of places by a tag selected by user and returns three of them
 def fetch_places_by_keyword(all_places, keyword):
     print("Searching places by keyword")
+
     def filter_places_by_tag(item):
-        if keyword in item.tags:
+        if keyword.lower() in item.tags:
             return True
         else:
             return False
 
-    results = list(filter(filter_places_by_tag(), all_places))
+    results = list(filter(filter_places_by_tag, all_places))
+
+    # shuffle the results to get different places on each call
+    random.shuffle(results)
     query_result_places = results[:3]
 
     return query_result_places

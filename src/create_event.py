@@ -53,7 +53,7 @@ def create_event(item):
     else:
         tags = item['tags']
         for tag in tags:
-            event.add_tag(tag['name'])
+            event.add_tag(tag['name'].lower())
 
     # Set image if it exists
     if item['description']['images']:

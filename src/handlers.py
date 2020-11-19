@@ -3,7 +3,7 @@ from bot import start, caps, echo, search_events, nearby, handle_search_date, se
     trains, route, stations, stations_button_selection_handler, handle_search_events, search_event_inline_handler, \
     search_activities, \
     handle_search_activities, search_activities_inline_handler, search_inline_handler, handle_search, \
-    station_info_inline_handler, location_inline_handler
+    station_info_inline_handler, location_inline_handler, handle_search_places, search_places_inline_handler
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
@@ -35,13 +35,17 @@ dispatcher.add_handler(echo_handler)
 search_handler = CommandHandler('search', handle_search)
 dispatcher.add_handler(search_handler)
 
-# This handler listens for user's messages and calls the previously defined search function
-search_handler = CommandHandler('events', handle_search_events)
-dispatcher.add_handler(search_handler)
+# This handler listens for user's messages and calls the previously defined handle_search_events function
+event_handler = CommandHandler('events', handle_search_events)
+dispatcher.add_handler(event_handler)
 
-# This handler listens for user's messages and calls the previously defined search function
+# This handler listens for user's messages and calls the previously defined handle_search_activities function
 activity_handler = CommandHandler('activities', handle_search_activities)
 dispatcher.add_handler(activity_handler)
+
+# This handler listens for user's messages and calls the previously defined search function
+place_handler = CommandHandler('places', handle_search_places)
+dispatcher.add_handler(place_handler)
 
 # This handler listens for user's messages and calls the previously defined trains function
 trains_handler = CommandHandler('trains', trains)
@@ -79,7 +83,7 @@ updater.dispatcher.add_handler(CallbackQueryHandler(search_event_inline_handler,
 updater.dispatcher.add_handler(CallbackQueryHandler(search_activities_inline_handler, pattern='a'))
 
 # handler for /search_places inline keyboard buttons
-updater.dispatcher.add_handler(CallbackQueryHandler(search_activities_inline_handler, pattern='p'))
+updater.dispatcher.add_handler(CallbackQueryHandler(search_places_inline_handler, pattern='p'))
 
 # handler for /searchdate inline keyboard buttons
 updater.dispatcher.add_handler(CallbackQueryHandler(searchdate_inline_handler, pattern='i'))
