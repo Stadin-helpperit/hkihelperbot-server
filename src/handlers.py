@@ -1,4 +1,4 @@
-from bot import caps, nearby, handle_search_date, searchdate_inline_handler, \
+from bot import helptext, nearby, handle_search_date, searchdate_inline_handler, \
     cal_inline_handler, \
     trains, route, handle_search_events, search_event_inline_handler, \
     handle_search_activities, search_activities_inline_handler, search_inline_handler, handle_search, \
@@ -18,8 +18,8 @@ updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher
 
 # This handler listens for the command "/start" and calls the previously defined caps function
-caps_handler = CommandHandler("caps", caps)
-dispatcher.add_handler(caps_handler)
+helptext_handler = CommandHandler("help", helptext)
+dispatcher.add_handler(helptext_handler)
 
 
 # This handler listens for user's messages and calls the previously defined search function

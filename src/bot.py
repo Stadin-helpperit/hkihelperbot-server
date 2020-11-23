@@ -189,9 +189,19 @@ def route(update, context):
 
 
 # Function that sends the given text back in all caps as a message
-def caps(update, context):
-    text_caps = " ".join(context.args).upper()
-    context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
+def helptext(update, context):
+    text_help = "Alright, lets get you started! 👋 \n" \
+                "I'll help you find stuff to do and see around Helsinki. 😎 \n\n" \
+                "Here's all of the ways I can help you: \n\n" \
+                "📍Send me a location and I'll look up the 3 closest events to your location! \n\n" \
+                "ℹ️ /search | With this command I'll help you find events, places and activities around Helsinki " \
+                "related to your interests! \n\n" \
+                "🗓 /searchdate | With this command I'll help you find events around Helsinki on a specific day. \n\n" \
+                "🗺 /from [starting address] to [destination address] | I'll look up public transport directions to " \
+                "your destination! \n\n" \
+                "🚆 /trains [station code] | I'll look up useful info about arriving and departing trains at the " \
+                "specified station! "
+    context.bot.send_message(chat_id=update.effective_chat.id, text=text_help)
 
 
 # Gets the user's location if they send one and returns three events near the location
