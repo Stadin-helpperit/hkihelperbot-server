@@ -190,8 +190,7 @@ def route(update, context):
 
 # Function that sends the given text back in all caps as a message
 def helptext(update, context):
-    text_help = "Alright, lets get you started! 👋 \n" \
-                "I'll help you find stuff to do and see around Helsinki. 😎 \n\n" \
+    text_help = "Alright, lets get you started! 😌 \n\n" \
                 "Here's all of the ways I can help you: \n\n" \
                 "📍Send me a location and I'll look up the 3 closest events to your location! \n\n" \
                 "ℹ️ /search | With this command I'll help you find events, places and activities around Helsinki " \
