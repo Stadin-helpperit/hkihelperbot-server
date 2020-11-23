@@ -192,14 +192,16 @@ def route(update, context):
 def helptext(update, context):
     text_help = "Alright, lets get you started! 😌 \n\n" \
                 "Here's all of the ways I can help you: \n\n" \
-                "📍Send me a location and I'll look up the 3 closest events to your location! \n\n" \
+                "📍Send me a location through Telegram's attachments menu and I'll look up the 3 closest events to " \
+                "that location. \n\n" \
                 "ℹ️ /search | With this command I'll help you find events, places and activities around Helsinki " \
-                "related to your interests! \n\n" \
+                "related to your interests. \n\n" \
                 "🗓 /searchdate | With this command I'll help you find events around Helsinki on a specific day. \n\n" \
                 "🗺 /from [starting address] to [destination address] | I'll look up public transport directions to " \
-                "your destination! \n\n" \
+                "your destination. \n\n" \
                 "🚆 /trains [station code] | I'll look up useful info about arriving and departing trains at the " \
-                "specified station! "
+                "specified station. \n\n" \
+                "To see these instructions again just type in the /help command!"
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_help)
 
 

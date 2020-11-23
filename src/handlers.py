@@ -22,6 +22,11 @@ helptext_handler = CommandHandler("help", helptext)
 dispatcher.add_handler(helptext_handler)
 
 
+# This handler listens for the command "/start" and calls the previously defined caps function
+start_handler = CommandHandler("start", helptext)
+dispatcher.add_handler(start_handler)
+
+
 # This handler listens for user's messages and calls the previously defined search function
 search_handler = CommandHandler('search', handle_search)
 dispatcher.add_handler(search_handler)
