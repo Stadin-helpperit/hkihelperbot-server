@@ -9,8 +9,9 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 
 - /search [keyword] -- Search for events, places and activites in Helsinki
 - /searchdate -- Search for events on a specific day
-- /route [start address] to [destination address] -- Returns public transport directions to the destination.
+- /from [start address] to [destination address] -- Returns public transport directions to the destination
 - /trains [stationcode] -- Returns arriving and departing trains from the specified station
+- /help -- Shows the help text that shows up when you first start the bot
 
 ##### Other functionality
 
