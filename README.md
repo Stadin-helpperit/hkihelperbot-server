@@ -17,7 +17,7 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 
 ## Technologies
 
-The bot is written in Python and it will be hosted on a Raspberry Pi server. 
+The bot is written in Python and utilizes the [Python Telegramn Bot](https://github.com/python-telegram-bot/python-telegram-bot) library.
 
 ## How to install?
 
