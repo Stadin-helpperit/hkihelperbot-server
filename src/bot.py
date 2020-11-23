@@ -3,7 +3,9 @@ from datetime import datetime, timedelta
 from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
     fetch_activities_by_keyword, fetch_all_activities
 from fetch_hsl_data import fetch_hsl_route, create_route_msg
+from create_weather import create_weather_msg
 from create_msg import create_message_text, create_message_train, create_message_text_activity
+from create_weather import fetch_weather
 from utilities import create_tag_keyboard_markup
 import telegram
 import threading
@@ -197,6 +199,12 @@ def route(update, context):
     routemsg = create_route_msg()
     for item in range(len(routemsg)):
         context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg[item])
+
+def weather(update, context): 
+    weatherdata = fetch_weather()
+    weathermsg = create_weather_msg(weatherdata)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=weathermsg, parse_mode=telegram.ParseMode.HTML)
+    
 
 
 # Function that sends the given text back in all caps as a message
