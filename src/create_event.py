@@ -25,12 +25,12 @@ def create_event(item):
 
     # Set the starting and ending dates of the event
     if item['event_dates']['starting_day'] is None:
-        event.start_time = 'No announced starting date'
+        event.start_time = 'No starting date announced'
     else:
         event.add_start_time(str_to_datetime(item['event_dates']['starting_day']))
 
     if item['event_dates']['ending_day'] is None:
-        event.end_time = 'No announced ending date'
+        event.end_time = 'No ending date announced'
     else:
         event.end_time = str_to_datetime(item['event_dates']['ending_day'])
 
