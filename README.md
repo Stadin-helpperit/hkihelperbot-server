@@ -7,10 +7,9 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 
 ##### Currently supported commands
 
-- /search [keyword] -- Sends back events that match the keywords.
-- /searchdate -- Send back a choise poll for events today, tomorrow etc.
-- /trains [stationcode] -- Stationcodes are formatted like: HKI, TPE, TKU... Sends back arriving and departuring trains
-- /activities [keyword] -- Same as search but for activities around Helsinki
+- /search [keyword] -- Search for events, places and activites in Helsinki
+- /searchdate -- Search for events on a specific day
+- /trains [stationcode] -- Returns arriving and departing trains from the specified station
 
 ##### Other functionality
 
