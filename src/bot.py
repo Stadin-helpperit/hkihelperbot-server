@@ -72,13 +72,8 @@ def location_inline_handler(update, context):
     query = update.callback_query
     if query.data == 'l1':
         # TODO: handle get events/activitys.. location and send it to user via bot.send_location
-        query.edit_message_text(text="Searching for the search result's locations... ")
+        query.edit_message_text(text="Looking up the search result's locations... ")
     pass
-
-
-# Function that sends a message ""I'm a bot, please talk to me!""
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
 
 
 # a function to search events by keyword
@@ -96,7 +91,8 @@ def search_events(update, context, search_word):
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text="No events matching keyword. Try to use the command like this: /search (keyword)")
+                                 text="No events matching the keyword. Try to use the command like this: /search ("
+                                      "keyword)")
 
 
 def handle_search_activities(update, context):
@@ -106,7 +102,7 @@ def handle_search_activities(update, context):
 
     # if the user gives a parameter the search_activities() function is called
     if context.args:
-        msg = update.message.reply_text('Searching for activities withe the tag {}...'.format(' '.join(context.args)))
+        msg = update.message.reply_text('Searching for activities with the tag {}...'.format(' '.join(context.args)))
         search_activities(update, context, ' '.join(context.args))
         msg.edit_text('Activities with the tag {}:'.format(' '.join(context.args)))
     # else will send the tag keyboard
@@ -135,7 +131,7 @@ def search_activities(update, context, search_word):
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text="No activities matching keyword. Try to use the command like this: /search ("
+                                 text="No activities matching the keyword. Try to use the command like this: /search ("
                                       "keyword)")
 
 
@@ -157,12 +153,8 @@ def search_places(update, context, search_word):
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text="No places matching keyword. Try to use the command like this: /search (keyword)")
-
-
-# Function that echoes the user's messages
-def echo(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+                                 text="No places matching the keyword. Try to use the command like this: /search ("
+                                      "keyword)")
 
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
