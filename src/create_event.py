@@ -15,22 +15,22 @@ def create_event(item):
     elif item['name']['fi'] is not None:
         event.name = item['name']['fi']
     else:
-        event.name = 'Ei ilmoitettua nimeä'
+        event.name = 'No name announced'
 
     # Set the address if it exists
     if item['location']['address']['street_address'] is not None:
         event.address = item['location']['address']['street_address']
     else:
-        event.address = 'Ei ilmoitettua osoitetta'
+        event.address = 'No address announced'
 
     # Set the starting and ending dates of the event
     if item['event_dates']['starting_day'] is None:
-        event.start_time = 'Ei ilmoitettua aloituspäivämäärää'
+        event.start_time = 'No starting date announced'
     else:
         event.add_start_time(str_to_datetime(item['event_dates']['starting_day']))
 
     if item['event_dates']['ending_day'] is None:
-        event.end_time = 'Ei ilmoitettua lopetuspäivämäärää'
+        event.end_time = 'No ending date announced'
     else:
         event.end_time = str_to_datetime(item['event_dates']['ending_day'])
 
@@ -40,7 +40,7 @@ def create_event(item):
 
     # Set the description of the event
     if item['description']['intro'] is None:
-        event.desc = 'Kuvausta ei saatavilla'
+        event.desc = 'No description available'
     else:
         event.desc = item['description']['intro']
 
@@ -49,11 +49,11 @@ def create_event(item):
 
     # Set the tags for the event from list
     if len(item['tags']) < 1:
-        event.tags = ['Tapahtumalla ei tageja']
+        event.tags = ['The event has no tags']
     else:
         tags = item['tags']
         for tag in tags:
-            event.add_tag(tag['name'])
+            event.add_tag(tag['name'].lower())
 
     # Set image if it exists
     if item['description']['images']:

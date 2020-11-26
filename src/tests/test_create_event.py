@@ -10,7 +10,7 @@ with open(path) as jsonfile:
 
 def test_create_event_nameless():
     test_event = create_event(data[0])
-    assert test_event.name == 'Ei ilmoitettua nimeä'
+    assert test_event.name == 'No name announced'
 
 
 def test_create_event_no_url_link():
@@ -25,17 +25,17 @@ def test_create_event_no_location():
 
 def test_create_event_no_tags():
     test_event = create_event(data[3])
-    assert test_event.tags == ['Tapahtumalla ei tageja']
+    assert test_event.tags == ['The event has no tags']
 
 
 def test_create_event_no_address():
     test_event = create_event(data[4])
-    assert test_event.address == 'Ei ilmoitettua osoitetta'
+    assert test_event.address == 'No address announced'
 
 
 def test_create_event_no_dates():
     test_event = create_event(data[5])
-    assert test_event.start_time == 'Ei ilmoitettua aloituspäivämäärää' and test_event.end_time == 'Ei ilmoitettua lopetuspäivämäärää'
+    assert test_event.start_time == 'No starting date announced' and test_event.end_time == 'No ending date announced'
 
 
 def test_create_event_no_image():

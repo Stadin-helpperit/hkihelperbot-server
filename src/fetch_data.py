@@ -3,6 +3,7 @@ from create_train import create_train
 from create_activity import create_activity
 from create_place import create_place
 import requests
+import random
 
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
 
@@ -10,24 +11,17 @@ import requests
 # Function that fetches data based on a keyword sent by the user and returns some matching events
 def fetch_query(all_events, keyword):
     def filter_events_by_tag(item):
-        if keyword in item.tags:
+        if keyword.lower() in item.tags:
             return True
         else:
             return False
 
     results = list(filter(filter_events_by_tag, all_events))
-    query_result_events = results[:3]
-    """events = []
-    try:
-        for item in sample_arr:
-            event = create_event(item)
-            events.append(event)
 
-        print(events[0].name, events[0].lat, events[0].lon, events[0].address, events[0].start_time, events[0].end_time,
-              events[0].link)
-    except Exception as ex:
-        print(ex)
-        print('keyword not valid')"""
+    # shuffle the results to get different events on each call
+    random.shuffle(results)
+    query_result_events = results[:3]
+
     return query_result_events
 
 
@@ -51,47 +45,52 @@ def fetch_nearby(lat, lon):
 # Function that fetches a list of activities near the location sent by user and returns three of them
 def fetch_activities_by_keyword(all_activities, keyword):
     def filter_activities_by_tag(item):
-        if keyword in item.tags:
+        if keyword.lower() in item.tags:
             return True
         else:
             return False
 
     results = list(filter(filter_activities_by_tag, all_activities))
+
+    # Shuffle the results array to get different activities on each call
+    random.shuffle(results)
     query_result_activities = results[:3]
+
 
     return query_result_activities
 
-    """url = 'http://open-api.myhelsinki.fi/v1/activities/?tags_search=' + keyword 
+
+# Function that fetches a list of places by a tag selected by user and returns three of them
+def fetch_places_by_keyword(all_places, keyword):
+    print("Searching places by keyword")
+
+    def filter_places_by_tag(item):
+        if keyword.lower() in item.tags:
+            return True
+        else:
+            return False
+
+    results = list(filter(filter_places_by_tag, all_places))
+
+    # shuffle the results to get different places on each call
+    random.shuffle(results)
+    query_result_places = results[:3]
+
+    return query_result_places
+
+
+# Function that fetches a list of activities near the location sent by user and returns three of them
+def fetch_all_places():
+    url = 'http://open-api.myhelsinki.fi/v1/places/'
     data = requests.get(url).json()
     results = data['data']
-    sample_arr = results[:3]
-    print(sample_arr)
-    activities = []
+    all_places = []
 
-    for item in sample_arr:
-        activity = create_activity(item)
-        activities.append(activity)
-
-    print(activities[0].name, activities[0].lat, activities[0].lon, activities[0].address)
-
-    return activities"""
-
-    # Function that fetches a list of activities near the location sent by user and returns three of them
-def fetch_places(keyword):
-    url = 'http://open-api.myhelsinki.fi/v1/places/?tags_search=' + keyword
-    data = requests.get(url).json()
-    results = data['data']
-    sample_arr = results[:3]
-    print(sample_arr)
-    places = []
-
-    for item in sample_arr:
+    for item in results:
         place = create_place(item)
-        places.append(place)
+        all_places.append(place)
 
-    print(places[0].name, places[0].lat, places[0].lon, places[0].address)
-
-    return places
+    return all_places
 
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message

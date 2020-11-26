@@ -3,14 +3,15 @@
 Stadin Helpperit Telegram bot is a chatbot in the Telegram messaging app that utilizes open data from the [MyHelsinki Open API](http://open-api.myhelsinki.fi/).
 The bot responds to different commands and requests. 
 
-Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try the bot on Telegram web / local client)
+Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try the bot on Telegram web / local client, it's probably not running though)
 
 ##### Currently supported commands
 
-- /search [keyword] -- Sends back events that match the keywords.
-- /searchdate -- Send back a choise poll for events today, tomorrow etc.
-- /trains [stationcode] -- Stationcodes are formatted like: HKI, TPE, TKU... Sends back arriving and departuring trains
-- /activities [keyword] -- Same as search but for activities around Helsinki
+- /search [keyword] -- Search for events, places and activites in Helsinki
+- /searchdate -- Search for events on a specific day
+- /from [start address] to [destination address] -- Returns public transport directions to the destination
+- /trains [stationcode] -- Returns arriving and departing trains from the specified station
+- /help -- Shows the help text that shows up when you first start the bot
 
 ##### Other functionality
 
@@ -18,7 +19,7 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 
 ## Technologies
 
-The bot is written in Python and it will be hosted on a Raspberry Pi server. 
+The bot is written in Python and utilizes the [Python Telegramn Bot](https://github.com/python-telegram-bot/python-telegram-bot) library.
 
 ## How to install?
 

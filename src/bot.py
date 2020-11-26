@@ -5,7 +5,10 @@ from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_dat
 from fetch_hsl_data import fetch_hsl_route, create_route_msg
 from create_weather import create_weather_msg
 from create_msg import create_message_text, create_message_train, create_message_text_activity
-from create_weather import fetch_weather
+from create_weather import fetch_weather, fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
+from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
+from create_msg import create_message_text, create_message_train, create_message_text_activity, \
+    create_message_text_place
 from utilities import create_tag_keyboard_markup
 import telegram
 import threading
@@ -14,7 +17,7 @@ import telegramcalendar
 # a processed list of all events to be fetched once an hour and should be used by all functions
 all_events = []
 all_activities = []
-
+all_places = []
 
 # --- SCHEDULED FUNCTIONS TO FETCH AND PROCESS DATA FROM MYHELSINKI API
 
@@ -27,14 +30,15 @@ def sched_fetch():
     print('Scheduled fetch beginning')
     global all_events
     global all_activities
+    global all_places
     all_events = fetch_all_events()
     all_activities = fetch_all_activities()
+    all_places = fetch_all_places()
     print('Scheduled fetch done')
 
-    """for item in all_events:
+    """for item in all_places:
         print(item.name + ' : ')
-        for time in item.start_time:
-            print(time)"""
+        print(item.tags)"""
 
     threading.Timer(WAIT_SECONDS, sched_fetch).start()
 
@@ -58,18 +62,22 @@ def search_inline_handler(update, context):
     query = update.callback_query
     if query.data == 'k1':
         handle_search_events(update, context)
-        query.edit_message_text(text="Etsitään tapahtumia... ")
+        query.edit_message_text(text="Searching for events... ")
     elif query.data == 'k2':
         handle_search_activities(update, context)
-        query.edit_message_text(text="Etsitään aktiviteetteja... ")
+        query.edit_message_text(text="Searching for activites... ")
     elif query.data == 'k3':
-        # TODO: places
-        pass
+        handle_search_places(update, context)
+        query.edit_message_text(text="Searching for places...")
 
 
-# Function that sends a message ""I'm a bot, please talk to me!""
-def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+# Handles the button to check location for result after each Event, Activity, or Place
+def location_inline_handler(update, context):
+    query = update.callback_query
+    if query.data == 'l1':
+        # TODO: handle get events/activitys.. location and send it to user via bot.send_location
+        query.edit_message_text(text="Looking up the search result's locations... ")
+    pass
 
 
 # a function to search events by keyword
@@ -87,7 +95,8 @@ def search_events(update, context, search_word):
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text='No events matching keyword. Use command like /search (keyword)')
+                                 text="No events matching the keyword. Try to use the command like this: /search ("
+                                      "keyword)")
 
 
 def handle_search_activities(update, context):
@@ -97,14 +106,15 @@ def handle_search_activities(update, context):
 
     # if the user gives a parameter the search_activities() function is called
     if context.args:
-        msg = update.message.reply_text('Etsitään aktiviteetteja tagilla {}...'.format(' '.join(context.args)))
+        msg = update.message.reply_text('Searching for activities with the tag {}...'.format(' '.join(context.args)))
         search_activities(update, context, ' '.join(context.args))
-        msg.edit_text('Tapahtumat tagilla {}:'.format(' '.join(context.args)))
+        msg.edit_text('Activities with the tag {}:'.format(' '.join(context.args)))
     # else will send the tag keyboard
     else:
         reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text='Hae aktiviteetteja tagilla. Suosittuja tageja:', reply_markup=reply_markup)
+                                 text='Search for activites with a tag. Some popular tags:',
+                                 reply_markup=reply_markup)
         # update.message.reply_text('Hae aktiviteetteja tagilla. Suosittuja tageja:', reply_markup=reply_markup)
 
 
@@ -125,80 +135,61 @@ def search_activities(update, context, search_word):
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text='No events matching keyword. Use command like /search (keyword)')
+                                 text="No activities matching the keyword. Try to use the command like this: /search ("
+                                      "keyword)")
 
 
-# Function that echoes the user's messages
-def echo(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
+# TODO: ask for further information about places (about subcategories)
+# a function to search places by keyword
+def search_places(update, context, search_word):
+    search_result = fetch_places_by_keyword(all_places, search_word)
+    # Search results should be looped and send more results to user, but for now it only send first one's name
+    if len(search_result) > 0:
+        for item in search_result:
+            msg_text = create_message_text_place(item)
+            # Media limit with image = 1024 characters, remove the image from results if msg_text > 1024
+            if item.img_link is not None and len(msg_text) < 1024:
+                context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
+                                       caption=msg_text, parse_mode=telegram.ParseMode.HTML)
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text
+                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text="No places matching the keyword. Try to use the command like this: /search ("
+                                      "keyword)")
 
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
 def trains(update, context):
-    trainsresult = fetch_trains(context.args)
-    for item in trainsresult:
+    trains_result = fetch_trains(context.args)
+    for item in trains_result:
         context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
                                  parse_mode=telegram.ParseMode.HTML)
 
 
-def button_selection_handler(update, context):
-    query = update.callback_query
-    if query.data == 's1':
-        query.edit_message_text(text="Etsitään asemia A-F... ")
-        scope = 'a-f'
-        stations_selection(update, context, scope)
-        query.edit_message_text(text="ASEMAT: ")
-    elif query.data == 's2':
-        query.edit_message_text(text="Etsitään asemia G-N... ")
-        scope = 'g-n'
-        stations_selection(update, context, scope)
-        query.edit_message_text(text="ASEMAT: ")
-    elif query.data == 's3':
-        query.edit_message_text(text="Etsitään asemia O-Ö... ")
-        scope = 'o-ö'
-        stations_selection(update, context, scope)
-        query.edit_message_text(text="ASEMAT: ")
-
-
-# Function that lists all station shortcodes with matching stations for user to use with /trains command
-def stations(update, context):
-    keyboard = [[InlineKeyboardButton(text='A-F', callback_data='s1'),
-                 InlineKeyboardButton("G-N", callback_data='s2')],
-                [InlineKeyboardButton("O-Ö", callback_data='s3')]]
-    reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
-    update.message.reply_text('Valitse asemalyhenteet väliltä:', reply_markup=reply_markup)
-
-
-def stations_selection(update, context, scope):
-    stationslist = fetch_stations()
-    msg_text = ''
-    context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
-    if scope == 'a-f':
-        for item in stationslist[:20]:
-            if item['type'] == 'STATION':
-                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
-            else:
-                continue
-    elif scope == 'g-n':
-        for item in stationslist[21:40]:
-            if item['type'] == 'STATION':
-                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
-            else:
-                continue
-    elif scope == 'o-ö':
-        for item in stationslist[41:60]:
-            if item['type'] == 'STATION':
-                msg_text = (msg_text + ', ' + item['stationName'] + ' - ' + item['stationShortCode'] + '\n')
-            else:
-                continue
-
-    context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
-
-
 def route(update, context):
-    routemsg = create_route_msg()
-    for item in range(len(routemsg)):
-        context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg[item])
+    if context.args:
+        to_index = context.args.index('to')
+        from_name = '%20'.join(context.args[0:to_index])
+        to_name = '%20'.join(context.args[to_index + 1:])
+        from_address_and_loc = fetch_search_address(from_name)
+        to_address_and_loc = fetch_search_address(to_name)
+
+        print(from_address_and_loc + ':::' + to_address_and_loc)
+
+        hsl_fetch_result = fetch_hsl_route(from_address_and_loc, to_address_and_loc)
+    else:
+        # TODO: /route command should also work without parameters
+        return 0
+
+    if hsl_fetch_result['data']['plan']['itineraries']:
+        routemsg = create_route_msg(hsl_fetch_result)
+    else:
+        routemsg = "Route not found :( Try adding the city's name after the address, it might help!"
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
 
 def weather(update, context): 
     weatherdata = fetch_weather()
@@ -208,9 +199,20 @@ def weather(update, context):
 
 
 # Function that sends the given text back in all caps as a message
-def caps(update, context):
-    text_caps = " ".join(context.args).upper()
-    context.bot.send_message(chat_id=update.effective_chat.id, text=text_caps)
+def helptext(update, context):
+    text_help = "Alright, lets get you started! 😌 \n\n" \
+                "Here's all of the ways I can help you: \n\n" \
+                "📍Send me a location through Telegram's attachments menu and I'll look up the 3 closest events to " \
+                "that location. \n\n" \
+                "ℹ️ /search | With this command I'll help you find events, places and activities around Helsinki " \
+                "related to your interests. \n\n" \
+                "🗓 /searchdate | With this command I'll help you find events around Helsinki on a specific day. \n\n" \
+                "🗺 /from [starting address] to [destination address] | I'll look up public transport directions to " \
+                "your destination. \n\n" \
+                "🚆 /trains [station code] | I'll look up useful info about arriving and departing trains at the " \
+                "specified station. \n\n" \
+                "To see these instructions again just type in the /help command!"
+    context.bot.send_message(chat_id=update.effective_chat.id, text=text_help)
 
 
 # Gets the user's location if they send one and returns three events near the location
@@ -220,7 +222,7 @@ def nearby(update, context):
     print('Location of ' + user.first_name + ': lat:', user_location.latitude, ' lon:',
           user_location.longitude)
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
-    context.bot.send_message(chat_id=update.effective_chat.id, text='Lähimmät tapahtumasi (3 ensimmäistä osumaa): ')
+    context.bot.send_message(chat_id=update.effective_chat.id, text='3 nearest events to your location: ')
 
     # send 3 events and maps from nearby results list
     for item in event_data:
@@ -235,9 +237,9 @@ def cal_inline_handler(update, context):
     selected, date = telegramcalendar.process_calendar_selection(context.bot, update)
     if selected:
         query = update.callback_query
-        query.edit_message_text(text='Etsitään tapahtumia päivämäärällä {}...'.format(date.strftime('%d.%m.%Y')))
+        query.edit_message_text(text='Looking for events on {}...'.format(date.strftime('%d.%m.%Y')))
         search_date(update, context, date.strftime('%d.%m.%Y'))
-        query.edit_message_text(text='Tapahtumat päivämäärällä {}:'.format(date.strftime('%d.%m.%Y')))
+        query.edit_message_text(text='Events on {}:'.format(date.strftime('%d.%m.%Y')))
 
 
 # This function handles the user pressing a button on an inline keyboard
@@ -248,15 +250,15 @@ def searchdate_inline_handler(update, context):
 
     query = update.callback_query
     if query.data == 'i1':
-        query.edit_message_text(text="Etsitään tapahtumia tänään... ")
+        query.edit_message_text(text="Looking up events happening today... ")
         search_date(update, context, date_to_str())
-        query.edit_message_text(text="Tapahtumat tänään: ")
+        query.edit_message_text(text="Events happening today: ")
     elif query.data == 'i2':
-        query.edit_message_text(text="Etsitään tapahtumia huomenna... ")
+        query.edit_message_text(text="Looking up events happening tomorrow... ")
         search_date(update, context, date_to_str(1))
-        query.edit_message_text(text="Tapahtumat huomenna: ")
+        query.edit_message_text(text="Events happening tomorrow: ")
     elif query.data == 'i3':
-        query.edit_message_text(text="Valitse päivämäärä: ", reply_markup=telegramcalendar.create_calendar())
+        query.edit_message_text(text="Choose the date: ", reply_markup=telegramcalendar.create_calendar())
 
 
 # This function will handle the user command /searchdate
@@ -264,15 +266,15 @@ def searchdate_inline_handler(update, context):
 # otherwise it will invoke the inline keyboard to ask the date
 def handle_search_date(update, context):
     if context.args:
-        msg = update.message.reply_text('Etsitään tapahtumia päivämäärällä {}...'.format(context.args[0]))
+        msg = update.message.reply_text('Looking for events on {}...'.format(context.args[0]))
         search_date(update, context, context.args[0])
-        msg.edit_text('Tapahtumat päivämäärällä {}:'.format(context.args[0]))
+        msg.edit_text('Events on {}:'.format(context.args[0]))
     else:
-        keyboard = [[InlineKeyboardButton(text='Tänään', callback_data='i1'),
-                     InlineKeyboardButton("Huomenna", callback_data='i2')],
-                    [InlineKeyboardButton("Valitse päivämäärä", callback_data='i3')]]
+        keyboard = [[InlineKeyboardButton(text='Today', callback_data='i1'),
+                     InlineKeyboardButton("Tomorrow", callback_data='i2')],
+                    [InlineKeyboardButton("Choose the date", callback_data='i3')]]
         reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
-        update.message.reply_text('Miltä ajalta haluat tapahtumia:', reply_markup=reply_markup)
+        update.message.reply_text('Choose a date to look up events on:', reply_markup=reply_markup)
 
 
 # This function handles the user pressing a button on an inline keyboard with tag selection
@@ -281,9 +283,9 @@ def search_event_inline_handler(update, context):
 
     search_word = query.data.split('_')[1]
 
-    query.edit_message_text(text="Etsitään tapahtumia tagilla '{}'...".format(search_word))
+    query.edit_message_text(text="Looking for events with the tag '{}'...".format(search_word))
     search_events(update, context, search_word)
-    query.edit_message_text(text="Tapahtumat tagilla '{}': ".format(search_word))
+    query.edit_message_text(text="Event's matching the tag '{}': ".format(search_word))
 
 
 # This function handles the user pressing a button on an inline keyboard with tag selection
@@ -292,9 +294,21 @@ def search_activities_inline_handler(update, context):
 
     search_word = query.data.split('_')[1]
 
-    query.edit_message_text(text="Etsitään aktiviteetteja tagilla '{}'...".format(search_word))
+    query.edit_message_text(text="Looking up activities with the tag '{}'...".format(search_word))
     search_activities(update, context, search_word)
-    query.edit_message_text(text="Aktiviteetit tagilla '{}': ".format(search_word))
+    query.edit_message_text(text="Activities matching the tag '{}': ".format(search_word))
+
+
+# This function handles the user pressing a button on an inline keyboard with tag selection
+def search_places_inline_handler(update, context):
+    query = update.callback_query
+
+    search_word = query.data.split('_')[1]
+
+    query.edit_message_text(text="Looking up places with the tag '{}'...".format(search_word))
+    print("DEBUG: SELECTED PLACES")
+    search_places(update, context, search_word)
+    query.edit_message_text(text="Places matching the tag '{}': ".format(search_word))
 
 
 # This function handles the /search -command and either passes the parameter given by user to the search() function
@@ -305,13 +319,34 @@ def handle_search_events(update, context):
 
     # if the user gives a parameter the search() function is called
     if context.args:
-        msg = update.message.reply_text('Etsitään tapahtumia tagilla {}...'.format(' '.join(context.args)))
+        msg = update.message.reply_text('Looking up events with the tag {}...'.format(' '.join(context.args)))
         search_events(update, context, ' '.join(context.args))
-        msg.edit_text('Tapahtumat tagilla {}:'.format(' '.join(context.args)))
+        msg.edit_text('Events matching the tag {}:'.format(' '.join(context.args)))
     # else will send the tag keyboard
     else:
         reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
-        context.bot.send_message(chat_id=update.effective_chat.id, text='Hae tapahtumaa tagilla. Suosittuja tageja:', reply_markup=reply_markup)
+        context.bot.send_message(chat_id=update.effective_chat.id, text='Search for events with a tag. Some popular '
+                                                                        'tags:',
+                                 reply_markup=reply_markup)
+
+
+# This function handles the /search -command and either passes the parameter given by user to the search() function
+# or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
+def handle_search_places(update, context):
+    # create tag keyboard markup with parameter datatype as 'p' for places
+    tag_keyboard = create_tag_keyboard_markup('p')
+
+    # if the user gives a parameter the search_places() function is called
+    if context.args:
+        msg = update.message.reply_text('Looking up places with the tag {}...'.format(' '.join(context.args)))
+        search_places(update, context, ' '.join(context.args))
+        msg.edit_text('Places matching the tag {}:'.format(' '.join(context.args)))
+    # else will send the tag keyboard
+    else:
+        reply_markup = InlineKeyboardMarkup(tag_keyboard, resize_keyboard=True, one_time_keyboard=True)
+        context.bot.send_message(chat_id=update.effective_chat.id, text='Search for places with a tag. Some popular '
+                                                                        'tags:',
+                                 reply_markup=reply_markup)
 
 
 # This function will call fetch_by_date and send the user three events on a given date
@@ -335,4 +370,4 @@ def search_date(update, context, date):
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
-                                 text='No events on chosen date')
+                                 text='No events on the chosen date')

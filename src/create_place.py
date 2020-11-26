@@ -1,8 +1,8 @@
 from classes.Place import Place
 
-def create_place(item):
 
-     # Create an empty activity
+def create_place(item):
+    # Create an empty place
     place = Place()
 
     # Set the English name for the activity and if it doesn't exist choose the Finnish name
@@ -11,14 +11,13 @@ def create_place(item):
     elif item['name']['fi'] is not None:
         place.name = item['name']['fi']
     else:
-        place.name = 'Ei ilmoitettua nimeä'
+        place.name = 'No name announced'
 
     # Set the address if it exists
     if item['location']['address']['street_address'] is not None:
         place.address = item['location']['address']['street_address']
     else:
-        place.address = 'Ei ilmoitettua osoitetta'
-
+        place.address = 'No address announced'
 
     # Set coordinates for the place
     place.lat = item['location']['lat']
@@ -26,7 +25,7 @@ def create_place(item):
 
     # Set the description of the place
     if item['description']['body'] is None:
-        place.desc = 'Kuvausta ei saatavilla'
+        place.desc = 'No description available'
     else:
         place.desc = item['description']['body']
 
@@ -35,21 +34,16 @@ def create_place(item):
 
     # Set the tags for the place from list
     if len(item['tags']) < 1:
-        place.tags = ['Tapahtumalla ei tageja']
+        place.tags = ['Event has no tags']
     else:
         tags = item['tags']
         for tag in tags:
-            place.add_tag(tag['name'])
+            place.add_tag(tag['name'].lower())
 
     # Set image if it exists
     if item['description']['images']:
         if item['description']['images'][0]['url'] is not None and '{' not in item['description']['images'][0]['url']:
             place.img_link = item['description']['images'][0]['url']
-
-    # Place's opening hours from every week day
-    weekdays = item['opening_hours']['hours']
-    for weekday in weekdays:
-        place.add_open_hours("From: " + weekday['opens'] + " to: " + weekday['closes'])
 
     # Return the created place
     return place
