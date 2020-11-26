@@ -11,6 +11,7 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 - /searchdate -- Search for events on a specific day
 - /from [start address] to [destination address] -- Returns public transport directions to the destination
 - /trains [stationcode] -- Returns arriving and departing trains from the specified station
+- /weather -- returns current local weather in Helsinki
 - /help -- Shows the help text that shows up when you first start the bot
 
 ##### Other functionality
