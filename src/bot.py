@@ -1,7 +1,11 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
 from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
-    fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
+    fetch_activities_by_keyword, fetch_all_activities
+from fetch_hsl_data import fetch_hsl_route, create_route_msg
+from create_weather import create_weather_msg
+from create_msg import create_message_text, create_message_train, create_message_text_activity
+from create_weather import fetch_weather, fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
 from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
 from create_msg import create_message_text, create_message_train, create_message_text_activity, \
     create_message_text_place
@@ -186,6 +190,12 @@ def route(update, context):
         routemsg = "Route not found :( Try adding the city's name after the address, it might help!"
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
+
+def weather(update, context): 
+    weatherdata = fetch_weather()
+    weathermsg = create_weather_msg(weatherdata)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=weathermsg, parse_mode=telegram.ParseMode.HTML)
+    
 
 
 # Function that sends the given text back in all caps as a message

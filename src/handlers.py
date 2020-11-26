@@ -2,7 +2,7 @@ from bot import helptext, nearby, handle_search_date, searchdate_inline_handler,
     cal_inline_handler, \
     trains, route, handle_search_events, search_event_inline_handler, \
     handle_search_activities, search_activities_inline_handler, search_inline_handler, handle_search, \
-    location_inline_handler, handle_search_places, search_places_inline_handler
+    location_inline_handler, handle_search_places, search_places_inline_handler, weather
 from telegram.ext import CommandHandler, MessageHandler, Filters, Updater, CallbackQueryHandler
 from dotenv import load_dotenv
 import os
@@ -50,6 +50,10 @@ dispatcher.add_handler(trains_handler)
 # This handler listens for user's messages and calls the previously defined trains function
 route_handler = CommandHandler('from', route)
 dispatcher.add_handler(route_handler)
+
+# This handler listens /weather command
+weather_handler = CommandHandler('weather', weather)
+dispatcher.add_handler(weather_handler)
 
 # This handler listens for user's messages and calls the previously defined nearby function
 nearby_handler = MessageHandler(Filters.location & (~Filters.command), nearby)
