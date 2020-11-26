@@ -47,7 +47,6 @@ def create_tag_keyboard_markup(data_type):
                         ['families with children', '\U0001F46A Perheille'],
                         ['workshops', '\U0001F6E0 Työpajat']]
 
-
     # some functionality to turn the list of tags into telegram keyboard markup
     tag_keyboard = []
     tag_keyboard_row = []
