@@ -1,4 +1,3 @@
-from classes import Weather
 import json, requests, os
 from dotenv import load_dotenv
 
