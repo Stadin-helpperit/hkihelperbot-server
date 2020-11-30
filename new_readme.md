@@ -137,7 +137,7 @@ Now you can run the app with the following command:
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-<img src="/imgs/search.gif" width="400" alt="GIF of search function"/>
+<img src="/imgs/search.gif" width="300" alt="GIF of search function"/>
 
 <!-- ROADMAP -->
 ## Roadmap
