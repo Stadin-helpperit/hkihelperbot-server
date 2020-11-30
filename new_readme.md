@@ -83,6 +83,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+![screenshot1](/imgs/helperss1.png)
+
 This telegram bot was developed by Daniel Buselli, Feeliks Kilpi, Nikolas Kunnas, Juho Toivonen, Henri Väisänen 
 on [Haaga-Helia's](https://www.haaga-helia.fi/fi) [software project II](https://opinto-opas.haaga-helia.fi/course_unit/SWD4TA024) course.
 
