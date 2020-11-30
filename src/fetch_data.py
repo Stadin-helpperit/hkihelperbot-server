@@ -81,7 +81,7 @@ def fetch_places_by_keyword(all_places, keyword):
 
 # Function that fetches a list of activities near the location sent by user and returns three of them
 def fetch_all_places():
-    url = 'http://open-api.myhelsinki.fi/v1/places/'
+    url = 'http://open-api.myhelsinki.fi/v1/places/?language_filter=en'
     data = requests.get(url).json()
     results = data['data']
     all_places = []
@@ -138,7 +138,7 @@ def fetch_all_events():
         else:
             return True
 
-    url = "http://open-api.myhelsinki.fi/v1/events/"
+    url = "http://open-api.myhelsinki.fi/v1/events/?language_filter=en"
     data = requests.get(url).json()
     all_events = data['data']
     all_events = filter(filter_events_with_starttime, all_events)
@@ -162,7 +162,7 @@ def fetch_all_events():
 
 # Function that fetches all activities from Helsinki open API and returns the activities as a list
 def fetch_all_activities():
-    url = 'http://open-api.myhelsinki.fi/v1/activities/'
+    url = 'http://open-api.myhelsinki.fi/v1/activities/?language_filter=en'
     data = requests.get(url).json()
     results = data['data']
     all_activities = []
