@@ -20,8 +20,8 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-![Python package](https://github.com/Stadin-helpperit/hkihelperbot-server/workflows/Python%20package/badge.svg)
-![CodeQL](https://github.com/Stadin-helpperit/hkihelperbot-server/workflows/CodeQL/badge.svg)
+[![Python package][python-shield]][actions-url]
+[![CodeQL][code-shield]][actions-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
@@ -178,9 +178,12 @@ Project Link: [https://github.com/Stadin-helpperit/hkihelperbot-server](https://
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo.svg?style=for-the-badge
+[python-shield]: https://img.shields.io/github/workflow/status/Stadin-helpperit/hkihelperbot-server/Python%20package?style=for-the-badge
+[code-shield]: https://img.shields.io/github/workflow/status/Stadin-helpperit/hkihelperbot-server/CodeQL?label=CodeQL&style=for-the-badge
+[actions-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/actions
+[contributors-shield]: https://img.shields.io/github/contributors/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
 [contributors-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/graphs/contributors
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
 [issues-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
 [license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
