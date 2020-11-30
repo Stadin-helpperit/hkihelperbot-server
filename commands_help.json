@@ -1,0 +1,44 @@
+[
+  {
+    "emoji": ":round_pushpin:",
+    "command": "",
+    "syntax": "Location from attachments menu",
+    "explanation": "Send me a location through Telegram's attachments menu and I'll look up the 3 closest events to that location."
+  },
+  {
+    "emoji": ":magnifying_glass_tilted_left:",
+    "command": "/search",
+    "syntax": "/search",
+    "explanation": "With this command I'll help you find events, places and activities around Helsinki related to your interests."
+  },
+  {
+    "emoji": ":calendar:",
+    "command": "/searchdate",
+    "syntax": "/searchdate",
+    "explanation": "With this command I'll help you find events around Helsinki on a specific day."
+  },
+  {
+    "emoji": ":world_map:",
+    "command": "/from",
+    "syntax": "/from [starting address] to [destination address]",
+    "explanation": "I'll look up public transport directions to your destination."
+  },
+  {
+    "emoji": ":train:",
+    "command": "/trains",
+    "syntax": "/trains [station code]",
+    "explanation": "I'll look up useful info about arriving and departing trains at the specified station."
+  },
+  {
+    "emoji": ":sun_behind_cloud:",
+    "command": "/weather",
+    "syntax": "/weather",
+    "explanation": "I'll check the current weather in Helsinki for you."
+  },
+  {
+    "emoji": ":information:",
+    "command": "/help",
+    "syntax": "/help",
+    "explanation": "To see these instructions again just type in the /help command"
+  }
+]
