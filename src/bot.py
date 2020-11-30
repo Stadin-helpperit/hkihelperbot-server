@@ -54,8 +54,39 @@ def handle_search(update, context):
                  InlineKeyboardButton(text='Activities', callback_data='k2'),
                  InlineKeyboardButton(text='Places', callback_data='k3')]]
 
-    reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
-    update.message.reply_text('Do you want to search for events, activities or places?', reply_markup=reply_markup)
+    # if the user gives a parameter, the function will search content based on the user given search word
+    # otherwise the function will send the keyboard for further questions
+    if context.args:
+        # check if the user has provided a search word, otherwise calls the appropriate handle_search_[event_type]
+        if len(context.args) > 1:
+            if context.args[0] == 'event':
+                search_events(update, context, (' '.join(context.args[1:])))
+            elif context.args[0] == 'activity':
+                search_activities(update, context, (' '.join(context.args[1:])))
+            elif context.args[0] == 'place':
+                search_places(update, context, (' '.join(context.args[1:])))
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text='Error. The correct syntax for the '
+                                                                                'command is /search [event, activity'
+                                                                                ' or place] [search word]. The'
+                                                                                ' parameters in the brackets are'
+                                                                                ' optional.')
+        else:
+            if context.args[0] == 'event':
+                handle_search_events(update, context, True)
+            elif context.args[0] == 'activity':
+                handle_search_activities(update, context, True)
+            elif context.args[0] == 'place':
+                handle_search_places(update, context, True)
+            else:
+                context.bot.send_message(chat_id=update.effective_chat.id, text='Error. The correct syntax for the '
+                                                                                'command is /search [event, activity'
+                                                                                ' or place] [search word]. The'
+                                                                                ' parameters in the brackets are'
+                                                                                ' optional.')
+    else:
+        reply_markup = InlineKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
+        update.message.reply_text('Do you want to search for events, activities or places?', reply_markup=reply_markup)
 
 
 def search_inline_handler(update, context):
@@ -99,7 +130,11 @@ def search_events(update, context, search_word):
                                       "keyword)")
 
 
-def handle_search_activities(update, context):
+def handle_search_activities(update, context, set_context_args_to_null=False):
+    # set context.args to an empty list when this function is called with the /search-function
+    if set_context_args_to_null:
+        context.args = []
+
     print(update)
     # create tag keyboard markup with parameter datatype as 'a' for activities
     tag_keyboard = create_tag_keyboard_markup('a')
@@ -191,12 +226,12 @@ def route(update, context):
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
 
+
 def weather(update, context): 
     weatherdata = fetch_weather()
     weathermsg = create_weather_msg(weatherdata)
     context.bot.send_message(chat_id=update.effective_chat.id, text=weathermsg, parse_mode=telegram.ParseMode.HTML)
     
-
 
 # Function that sends the given text back in all caps as a message
 def helptext(update, context):
@@ -316,7 +351,10 @@ def search_places_inline_handler(update, context):
 
 # This function handles the /search -command and either passes the parameter given by user to the search() function
 # or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
-def handle_search_events(update, context):
+def handle_search_events(update, context, set_context_args_to_null=False):
+    # set context.args to an empty list when this function is called with the /search-function
+    if set_context_args_to_null:
+        context.args = []
     # create tag keyboard markup with parameter datatype as 't' for events
     tag_keyboard = create_tag_keyboard_markup('t')
 
@@ -335,7 +373,10 @@ def handle_search_events(update, context):
 
 # This function handles the /search -command and either passes the parameter given by user to the search() function
 # or sends the inline tag keyboard to the user which is handled by search_inline_keyboard()
-def handle_search_places(update, context):
+def handle_search_places(update, context, set_context_args_to_null=False):
+    # set context.args to an empty list when this function is called with the /search-function
+    if set_context_args_to_null:
+        context.args = []
     # create tag keyboard markup with parameter datatype as 'p' for places
     tag_keyboard = create_tag_keyboard_markup('p')
 
