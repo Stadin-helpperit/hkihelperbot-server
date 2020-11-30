@@ -190,11 +190,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email
+Daniel Buselli, Feeliks Kilpi, Nikolas Kunnas, Juho Toivonen and Henri Väisänen
 
 Project Link: [https://github.com/Stadin-helpperit/hkihelperbot-server](https://github.com/Stadin-helpperit/hkihelperbot-server)
 
