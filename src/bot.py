@@ -2,9 +2,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from datetime import datetime, timedelta
 from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
     fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
-from fetch_hsl_data import fetch_hsl_route, create_route_msg
 from create_weather import create_weather_msg
-from create_msg import create_message_text, create_message_train, create_message_text_activity
+from create_msg import create_help_msg
 from create_weather import fetch_weather
 from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
 from create_msg import create_message_text, create_message_train, create_message_text_activity, \
@@ -227,26 +226,15 @@ def route(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
 
 
-def weather(update, context): 
+def weather(update, context):
     weatherdata = fetch_weather()
     weathermsg = create_weather_msg(weatherdata)
     context.bot.send_message(chat_id=update.effective_chat.id, text=weathermsg, parse_mode=telegram.ParseMode.HTML)
-    
 
 # Function that sends the given text back in all caps as a message
 def helptext(update, context):
-    text_help = "Alright, lets get you started! 😌 \n\n" \
-                "Here's all of the ways I can help you: \n\n" \
-                "📍Send me a location through Telegram's attachments menu and I'll look up the 3 closest events to " \
-                "that location. \n\n" \
-                "ℹ️ /search | With this command I'll help you find events, places and activities around Helsinki " \
-                "related to your interests. \n\n" \
-                "🗓 /searchdate | With this command I'll help you find events around Helsinki on a specific day. \n\n" \
-                "🗺 /from [starting address] to [destination address] | I'll look up public transport directions to " \
-                "your destination. \n\n" \
-                "🚆 /trains [station code] | I'll look up useful info about arriving and departing trains at the " \
-                "specified station. \n\n" \
-                "To see these instructions again just type in the /help command!"
+    text_help = create_help_msg()
+
     context.bot.send_message(chat_id=update.effective_chat.id, text=text_help)
 
 

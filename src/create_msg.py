@@ -1,9 +1,25 @@
 from utilities import datetime_to_str
 from datetime import datetime
+from emoji import emojize
 import re
-
+import json
 
 # --- HERE WE FORM THE MESSAGES TO BE SENT TO THE USER ---
+
+# This function constructs the help message for the user
+with open("../commands_help.json") as json_data:
+    help_cmd_info = json.load(json_data)
+
+
+def create_help_msg():
+
+    help_msg = "Alright, lets get you started! :relieved_face: \n\n" \
+                "Here's all of the ways I can help you: \n\n"
+
+    for cmd in help_cmd_info:
+        help_msg += cmd['emoji'] + " " + cmd['syntax'] + " | " + cmd['explanation'] + "\n\n"
+
+    return emojize(help_msg)
 
 
 # This function takes an event and creates a message to be sent to the user
@@ -36,23 +52,23 @@ def create_message_text(event):
 
 def create_message_train(train):
     msg_text = '<b>' + 'From: ' + train.departure + ', track ' + train.fromTrack + ' to ' + train.arrival + ', track ' + train.toTrack + '</b>' \
-        + '\nTrain number: ' + train.train_type + str(train.number) \
-        + '\nTime: ' + str(train.datetime) + ', train type: ' + train.train_category + ', line: ' + train.line_id
+               + '\nTrain number: ' + train.train_type + str(train.number) \
+               + '\nTime: ' + str(train.datetime) + ', train type: ' + train.train_category + ', line: ' + train.line_id
     return msg_text
 
 
 def create_message_text_activity(activity):
     msg_text = '<b>' + activity.name + '</b>' + '\nAddress: ' + activity.address + '\n\n' + cleanhtml(activity.desc) \
                + "\n\nActivitie's tags: " + ', '.join(activity.tags) + '\n\nWhen and where: ' + activity.where_and_when \
-              + '\n\nKesto: ' + activity.duration
+               + '\n\nKesto: ' + activity.duration
 
     return msg_text
 
 
 def create_message_text_place(place):
     msg_text = '<b>' + place.name + '</b>' + '\nAddress: ' + place.address + '\n\n' + cleanhtml(place.desc) \
-                   + "\n\nPlace's tags: " + ', '.join(
-            place.tags)
+               + "\n\nPlace's tags: " + ', '.join(
+        place.tags)
 
     return msg_text
 

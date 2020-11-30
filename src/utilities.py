@@ -5,7 +5,6 @@ from telegram import InlineKeyboardButton
 
 # Helper functions to reformat date/time data
 
-
 def str_to_datetime(date_string):
     date_time_object = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ')
     from_zone_utc = pytz.utc

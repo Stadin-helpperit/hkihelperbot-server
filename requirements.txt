@@ -12,3 +12,4 @@ telegram==0.0.1
 colorama==0.4.3
 rsa==4.6
 pyasn1==0.4.8
+emoji==0.6.0
