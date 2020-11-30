@@ -83,7 +83,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<img src="/imgs/helperss1.png" width="800"/>
+<img src="/imgs/helperss1.png" width="800" alt="Screenshot of project"/>
 
 This telegram bot was developed by Daniel Buselli, Feeliks Kilpi, Nikolas Kunnas, Juho Toivonen, Henri Väisänen 
 on [Haaga-Helia's](https://www.haaga-helia.fi/fi) [software project II](https://opinto-opas.haaga-helia.fi/course_unit/SWD4TA024) course.
@@ -137,7 +137,7 @@ Now you can run the app with the following command:
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-![gif](/imgs/search.gif)
+<img src="/imgs/search.gif" width="400" alt="GIF of search function"/>
 
 <!-- ROADMAP -->
 ## Roadmap
