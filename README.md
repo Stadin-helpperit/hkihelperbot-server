@@ -42,4 +42,4 @@ Now you can run the app with the following command:
 >`python bot.py`
  
 ## Screenshots
-![Screenshot](screenshot.png)
+![gif](/imgs/search.gif)
