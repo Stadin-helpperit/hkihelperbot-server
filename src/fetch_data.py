@@ -27,7 +27,7 @@ def fetch_query(all_events, keyword):
 
 # Function that fetches a list of events near the location sent by user and returns three of them
 def fetch_nearby(lat, lon):
-    url = 'http://open-api.myhelsinki.fi/v1/events/?distance_filter=' + str(lat) + '%2C' + str(lon) + '%2C2'
+    url = 'http://open-api.myhelsinki.fi/v1/events/?language_filter=en&distance_filter=' + str(lat) + '%2C' + str(lon) + '%2C2'
     data = requests.get(url).json()
     results = data['data']
     sample_arr = results[:3]
