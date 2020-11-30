@@ -26,26 +26,26 @@ def datetime_to_str(date_time_object):
 def create_tag_keyboard_markup(data_type):
     # List of popular tags that is used when the /search-command is invoked without a parameter
     if data_type == 'p':
-        popular_tags = [['accomodation', '\U0001F3E8 Majoitus'],
-                        ['sights & attractions', '\U0001F5FC Nähtävyydet'],
-                        ['nature & sports', '\U0001F332\U000026BD Luonto ja liikunta'],
-                        ['museums & galleries', '\U0001F3A8 Museot ja galleriat'],
-                        ['restaurants & cafes', '\U0001F372 Ravintolat ja kahvilat'],
-                        ['sauna & wellness', '\U0001F9D6 Hyvinvointi'],
-                        ['venues', '\U0001F3DB Tapahtumapaikat'],
-                        ['services', '\U0001F689 Palvelut'],
-                        ['bars & nightlife', '\U0001F37B Baarit ja yöelämä'],
-                        ['work & study', '\U0001F4DA Työt ja opiskelu']]
+        popular_tags = [['accomodation', '\U0001F3E8 Acommodation'],
+                        ['sights & attractions', '\U0001F5FC Sights'],
+                        ['nature & sports', '\U0001F332\U000026BD Nature and sports'],
+                        ['museums & galleries', '\U0001F3A8 Museums and galleries'],
+                        ['restaurants & cafes', '\U0001F372 Restaurants and Cafés'],
+                        ['sauna & wellness', '\U0001F9D6 Wellbeing'],
+                        ['venues', '\U0001F3DB Event places'],
+                        ['services', '\U0001F689 Services'],
+                        ['bars & nightlife', '\U0001F37B Bars and nightlife'],
+                        ['work & study', '\U0001F4DA Work and study']]
     else:
-        popular_tags = [['music', '\U0001F3B6 Musiikki'],
-                        ['theatre', '\U0001F3AD Teatteri'],
-                        ['culture', '\U0001F3A8 Kulttuuri'],
-                        ['sports', '\U000026BD Urheilu'],
-                        ['museums', '\U0001F3DB Museot'],
-                        ['nature', '\U0001F332 Luonto'],
-                        ['food', '\U0001F372 Ruoka'],
-                        ['families with children', '\U0001F46A Perheille'],
-                        ['workshops', '\U0001F6E0 Työpajat']]
+        popular_tags = [['music', '\U0001F3B6 Music'],
+                        ['theatre', '\U0001F3AD Theatre'],
+                        ['culture', '\U0001F3A8 Culture'],
+                        ['sports', '\U000026BD Sports'],
+                        ['museums', '\U0001F3DB Museums'],
+                        ['nature', '\U0001F332 Nature'],
+                        ['food', '\U0001F372 Food'],
+                        ['families with children', '\U0001F46A Families with children'],
+                        ['workshops', '\U0001F6E0 Workshops']]
 
     # some functionality to turn the list of tags into telegram keyboard markup
     tag_keyboard = []

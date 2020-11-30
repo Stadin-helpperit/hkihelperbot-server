@@ -14,7 +14,7 @@ def create_message_text(event):
 
     # Only shows the Päättyy: ... -field if ending date exists
     if isinstance(event.end_time, datetime):
-        msg_text = msg_text + '\nPäättyy: ' + datetime_to_str(event.end_time)
+        msg_text = msg_text + '\nEndtime: ' + datetime_to_str(event.end_time)
 
     # TODO: korjaa niin että näkyy oikea pvm
     if len(event.start_time) > 1:
