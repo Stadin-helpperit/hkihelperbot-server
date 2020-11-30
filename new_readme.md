@@ -92,7 +92,7 @@ The bot is designed to help tourists in Helsinki find interesting things to do b
 To make useage as quick and easy as possible the bot uses Telegrams's inline keyboard functionality to have a dialouge with the user about preferences 
 before querying the API and outputting the data in an easy to read format.
 
-Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try the bot on Telegram web / local client, it's probably not running though)
+Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try the bot on Telegram web / local client, it's probably not running though :disappointed:)
 
 ##### Currently supported commands
 
