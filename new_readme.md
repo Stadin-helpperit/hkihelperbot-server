@@ -85,9 +85,27 @@
 
 <img src="/imgs/helperss1.png" width="800" alt="Screenshot of project"/>
 
-This telegram bot was developed by Daniel Buselli, Feeliks Kilpi, Nikolas Kunnas, Juho Toivonen, Henri Väisänen 
+This [Telegram bot](https://core.telegram.org/bots) was developed by Daniel Buselli, Feeliks Kilpi, Nikolas Kunnas, Juho Toivonen and Henri Väisänen 
 on [Haaga-Helia's](https://www.haaga-helia.fi/fi) [software project II](https://opinto-opas.haaga-helia.fi/course_unit/SWD4TA024) course.
 
+The bot is designed to help tourists in Helsinki find interesting things to do by utilizing the data from [MyHelsinki Open API](http://open-api.myhelsinki.fi/).
+To make useage as quick and easy as possible the bot uses Telegrams's inline keyboard functionality to have a dialouge with the user about preferences 
+before querying the API and outputting the data in an easy to read format.
+
+Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try the bot on Telegram web / local client, it's probably not running though)
+
+##### Currently supported commands
+
+- /search [keyword] -- Search for events, places and activites in Helsinki
+- /searchdate -- Search for events on a specific day
+- /from [start address] to [destination address] -- Returns public transport directions to the destination
+- /trains [stationcode] -- Returns arriving and departing trains from the specified station
+- /weather -- returns current local weather in Helsinki
+- /help -- Shows the help text that shows up when you first start the bot
+
+##### Other functionality
+
+- You can send your location (or any location) through Telegram's attachment menu and receive up to 3 events nearby the sent location.
 
 ### Built With
 
@@ -135,7 +153,10 @@ Now you can run the app with the following command:
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+You use the bot by typing in commands. You can check the available commands with the `/help` command. The telegram bot we use for production ([@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot))
+will also help you by showing you the available commands as you type.
+
+Below you can see the `/search` command in use.
 
 <img src="/imgs/search.gif" width="300" alt="GIF of search function"/>
 
