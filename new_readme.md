@@ -38,7 +38,7 @@
 
   <p align="center">
     Helsinki Helper is a chatbot in the Telegram messaging app that utilizes open data from the 
-    [MyHelsinki Open API](http://open-api.myhelsinki.fi/). The bot responds to different commands and requests. 
+    <a href="http://open-api.myhelsinki.fi/">MyHelsinki Open API</a>. The bot responds to different commands and requests. 
     <br />
     <a href="https://github.com/Stadin-helpperit/hkihelperbot-server"><strong>Explore the docs »</strong></a>
     <br />
