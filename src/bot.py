@@ -211,7 +211,10 @@ def nearby(update, context):
     print('Location of ' + user.first_name + ': lat:', user_location.latitude, ' lon:',
           user_location.longitude)
     event_data = fetch_nearby(user_location.latitude, user_location.longitude)
-    context.bot.send_message(chat_id=update.effective_chat.id, text='3 nearest events to your location: ')
+    if len(event_data) > 0:
+        context.bot.send_message(chat_id=update.effective_chat.id, text='Here\'s the events near you: ')
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text='No events found nearby')
 
     # send 3 events and maps from nearby results list
     for item in event_data:

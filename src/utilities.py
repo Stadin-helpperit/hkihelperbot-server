@@ -43,7 +43,7 @@ def create_tag_keyboard_markup(data_type):
                         ['museums', '\U0001F3DB Museums'],
                         ['nature', '\U0001F332 Nature'],
                         ['food', '\U0001F372 Food'],
-                        ['families with children', '\U0001F46A Families with children'],
+                        ['families with children', '\U0001F46A Families'],
                         ['workshops', '\U0001F6E0 Workshops']]
 
     # some functionality to turn the list of tags into telegram keyboard markup
