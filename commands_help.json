@@ -8,7 +8,7 @@
   {
     "emoji": ":magnifying_glass_tilted_left:",
     "command": "/search",
-    "syntax": "/search",
+    "syntax": "/search or /search [event/place/activity] [search tag]",
     "explanation": "With this command I'll help you find events, places and activities around Helsinki related to your interests."
   },
   {
