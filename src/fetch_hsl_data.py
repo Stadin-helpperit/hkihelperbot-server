@@ -93,18 +93,18 @@ def create_route_msg(hsl_fetch_result):
         submsg = ''
         duration = str(round(((leg['endTime'] - leg['startTime']) / 1000 / 60)))
         if leg['mode'] == 'WALK':
-            submsg += 'Kävele {} m ({} min)'.format(str(int(round(leg['distance'], -1))), duration)
+            submsg += 'Walk {} m ({} min)'.format(str(int(round(leg['distance'], -1))), duration)
         elif leg['mode'] == 'BUS':
-            submsg += 'Kulje bussilla {} ({} min)'.format(leg['route']['shortName'], duration)
+            submsg += 'Take the bus {} ({} min)'.format(leg['route']['shortName'], duration)
         elif leg['mode'] == 'SUBWAY':
             metro_suunta = leg['route']['longName'].split(' - ')[1]
-            submsg += 'Kulje metrolla suuntaan {} ({} min)'.format(metro_suunta, duration)
+            submsg += 'Take the metro to direction {} ({} min)'.format(metro_suunta, duration)
         elif leg['mode'] == 'RAIL':
-            submsg += 'Kulje {}-junalla ({} min)'.format(leg['route']['shortName'], duration)
+            submsg += 'Take the {}-train ({} min)'.format(leg['route']['shortName'], duration)
         elif leg['mode'] == 'TRAM':
-            submsg += 'Kulje raitiovaunulla {} ({} min)'.format(leg['route']['shortName'], duration)
+            submsg += 'Take the tram {} ({} min)'.format(leg['route']['shortName'], duration)
         elif leg['mode'] == 'FERRY':
-            submsg += 'Kulje lautalla {} ({} min)'.format(leg['route']['shortName'], duration)
+            submsg += 'Take the ferry {} ({} min)'.format(leg['route']['shortName'], duration)
         else:
             submsg += leg['mode']
 
@@ -123,10 +123,10 @@ def create_route_msg(hsl_fetch_result):
     else:
         route_duration = str(route_duration // 60) + ' h, ' + str(route_duration % 60) + ' min'
 
-    route_msg += '<b>Matkan kesto: </b>' + route_duration
-    route_msg += '\n<b>Kävelyä yhteensä: </b>' + \
+    route_msg += '<b>Duration of trip: </b>' + route_duration
+    route_msg += '\n<b>Walk distance: </b>' + \
                  str(int(round(hsl_fetch_result['data']['plan']['itineraries'][0]['walkDistance'], -1))) + ' metriä'
-    route_msg += '\n<b>Matkan hinta: </b>' + \
+    route_msg += '\n<b>Total price: </b>' + \
                  "{:.2f}".format(hsl_fetch_result['data']['plan']['itineraries'][0]['fares'][0]['cents'] / 100) + ' €\n\n'
 
     # first leg of the journey
