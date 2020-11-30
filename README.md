@@ -40,3 +40,6 @@ Now you need to make a .env file for your environment variables and add your Tel
 >
 Now you can run the app with the following command:
 >`python bot.py`
+ 
+## Screenshots
+![Screenshot](screenshot.png)
