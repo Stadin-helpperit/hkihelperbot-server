@@ -1,0 +1,107 @@
+[
+        {
+            "name": "events and activities",
+            "tags": [
+                {
+                    "tag": "Music",
+                    "key": "music",
+                    "emoji": ":notes:"
+                },
+                {
+                    "tag": "Theatre",
+                    "key": "theatre",
+                    "emoji": ":performing_arts:"
+                },
+                {
+                    "tag": "Culture",
+                    "key": "culture",
+                    "emoji": ":art:"
+                },
+                {
+                    "tag": "Sports",
+                    "key": "sports",
+                    "emoji": ":soccer:"
+                },
+                {
+                    "tag": "Museums",
+                    "key": "museums",
+                    "emoji": ":classical_building:"
+                },
+                {
+                    "tag": "Nature",
+                    "key": "nature",
+                    "emoji": ":evergreen_tree:"
+                },
+                {
+                    "tag": "Food",
+                    "key": "food",
+                    "emoji": ":pot_of_food:"
+                },
+                {
+                    "tag": "Families",
+                    "key": "families with children",
+                    "emoji": ":family:"
+                },
+                {
+                    "tag": "Workshops",
+                    "key": "workshops",
+                    "emoji": ":hammer_and_wrench:"
+                }
+            ]
+        },
+        {
+            "name": "places",
+            "tags": [
+                {
+                    "tag": "Accomodation",
+                    "key": "accomodation",
+                    "emoji": ":hotel:"
+                },
+                {
+                    "tag": "Sights & Attractions",
+                    "key": "sights & attractions",
+                    "emoji": ":statue_of_liberty:"
+                },
+                {
+                    "tag": "Nature & Sports",
+                    "key": "nature & sports'",
+                    "emoji": ":evergreen_tree:"
+                },
+                {
+                    "tag": "Museums & Galleries",
+                    "key": "museums & galleries",
+                    "emoji": ":artist_palette:"
+                },
+                {
+                    "tag": "Restaurants & Cafés",
+                    "key": "restaurants & cafes",
+                    "emoji": ":pot_of_food:"
+                },
+                {
+                    "tag": "Sauna & Wellness",
+                    "key": "sauna & wellness",
+                    "emoji": ":person_in_steamy_room:"
+                },
+                {
+                    "tag": "Venues",
+                    "key": "venues",
+                    "emoji": ":classical_building:"
+                },
+                {
+                    "tag": "Services",
+                    "key": "services",
+                    "emoji": ":station:"
+                },
+                {
+                    "tag": "Bars & Nightlife",
+                    "key": "bars & nightlife",
+                    "emoji": ":clinking_beer_mugs:"
+                },
+                {
+                    "tag": "Work & Study",
+                    "key": "work & study",
+                    "emoji": ":books:"
+                }
+            ]
+        }
+]
