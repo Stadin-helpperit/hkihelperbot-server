@@ -51,16 +51,21 @@ def create_message_text(event):
 
 
 def create_message_train(train):
-    msg_text = '<b>' + 'From: ' + train.departure + ', track ' + train.fromTrack + ' to ' + train.arrival + ', track ' + train.toTrack + '</b>' \
+    msg_text = '<b>' + 'From: ' + train.departure + ', track ' + train.fromTrack\
+               + ' to ' + train.arrival + ', track ' + train.toTrack + '</b>' \
                + '\nTrain number: ' + train.train_type + str(train.number) \
-               + '\nTime: ' + str(train.datetime) + ', train type: ' + train.train_category + ', line: ' + train.line_id
+               + '\nTime: ' + str(train.datetime)\
+               + ', train type: ' + train.train_category\
+               + ', line: ' + train.line_id
+
     return msg_text
 
 
 def create_message_text_activity(activity):
     msg_text = '<b>' + activity.name + '</b>' + '\nAddress: ' + activity.address + '\n\n' + cleanhtml(activity.desc) \
-               + "\n\nActivitie's tags: " + ', '.join(activity.tags) + '\n\nWhen and where: ' + activity.where_and_when \
-               + '\n\nKesto: ' + activity.duration
+               + "\n\nActivitie's tags: " + ', '.join(activity.tags)\
+               + '\n\nWhen and where: ' + activity.where_and_when \
+               + '\n\nDuration: ' + activity.duration
 
     return msg_text
 

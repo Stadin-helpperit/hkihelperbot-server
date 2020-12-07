@@ -59,7 +59,9 @@ def fetch_hsl_route(from_loc, to_loc):
     }
     """
 
-    request = requests.post('https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql', json={'query': query}, headers=headers)
+    request = requests.post('https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
+                            json={'query': query},
+                            headers=headers)
     if request.status_code == 200:
         return request.json()
     else:
@@ -127,7 +129,8 @@ def create_route_msg(hsl_fetch_result):
     route_msg += '\n<b>Walk distance: </b>' + \
                  str(int(round(hsl_fetch_result['data']['plan']['itineraries'][0]['walkDistance'], -1))) + ' metriä'
     route_msg += '\n<b>Total price: </b>' + \
-                 "{:.2f}".format(hsl_fetch_result['data']['plan']['itineraries'][0]['fares'][0]['cents'] / 100) + ' €\n\n'
+                 "{:.2f}".format(hsl_fetch_result['data']['plan']['itineraries'][0]['fares'][0]['cents'] / 100)\
+                 + ' €\n\n'
 
     # first leg of the journey
     route_msg += '<b>' + legs[0]['from']['name'] + '</b>' + '\t' + timestamp_to_string(legs[0]['startTime'])

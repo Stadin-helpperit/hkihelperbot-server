@@ -5,6 +5,7 @@ from create_place import create_place
 import requests
 import random
 
+
 # --- HERE WE FETCH DATA AND FORM MESSAGES TO BE SENT TO THE USER ---
 
 
@@ -27,7 +28,8 @@ def fetch_query(all_events, keyword):
 
 # Function that fetches a list of events near the location sent by user and returns three of them
 def fetch_nearby(lat, lon):
-    url = 'http://open-api.myhelsinki.fi/v1/events/?language_filter=en&distance_filter=' + str(lat) + '%2C' + str(lon) + '%2C2'
+    url = 'http://open-api.myhelsinki.fi/v1/events/?language_filter=en&distance_filter=' \
+          + str(lat) + '%2C' + str(lon) + '%2C2'
     data = requests.get(url).json()
     results = data['data']
     sample_arr = results[:3]
@@ -55,7 +57,6 @@ def fetch_activities_by_keyword(all_activities, keyword):
     # Shuffle the results array to get different activities on each call
     random.shuffle(results)
     query_result_activities = results[:3]
-
 
     return query_result_activities
 
@@ -94,8 +95,10 @@ def fetch_all_places():
 
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
+# noinspection PyPep8
 def fetch_trains(station):
-    result = requests.get("https://rata.digitraffic.fi/api/v1/live-trains/station/" + station[0] + "?minutes_before_departure=15&minutes_after_departure=15&minutes_before_arrival=15&minutes_after_arrival=15").json()
+    result = requests.get("https://rata.digitraffic.fi/api/v1/live-trains/station/" + station[
+        0] + "?minutes_before_departure=15&minutes_after_departure=15&minutes_before_arrival=15&minutes_after_arrival=15").json()
     # Array to save all train objects
     trains = []
     # Go through whole response json and create a Train instance and append it to array
@@ -120,20 +123,16 @@ def fetch_stations():
 # Function that fetches coordinates by address word from digitransit Geocoding API. Used to generate route plans.
 def fetch_coords(address):
     result = requests.get("https://api.digitransit.fi/geocoding/v1/search?text=" + address + "&size=1").json()
-    coordinates = []
-    coordinates.append(result['features'][0]['geometry']['coordinates'][0])
-    coordinates.append(result['features'][0]['geometry']['coordinates'][1])
+    coordinates = [result['features'][0]['geometry']['coordinates'][0],
+                   result['features'][0]['geometry']['coordinates'][1]]
     return coordinates
 
 
 # Function that fetches all events from Helsinki open API and returns the events as a list
 def fetch_all_events():
-    def get_event_name(item):
-        return item.name
-      
     # Function to help filter out events that have no start time
-    def filter_events_with_starttime(item):
-        if item['event_dates']['starting_day'] is None:
+    def filter_events_with_starttime(event_data):
+        if event_data['event_dates']['starting_day'] is None:
             return False
         else:
             return True
@@ -176,8 +175,8 @@ def fetch_all_activities():
 
 # This function fetches all events from myHelsinki-api and filters items on a given day
 def fetch_by_date(events, date):
-    def filter_events(item):
-        if str_to_datetime(date).date() in item.get_start_dates():
+    def filter_events(event_data):
+        if str_to_datetime(date).date() in event_data.get_start_dates():
             return True
         else:
             return False

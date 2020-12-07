@@ -1,17 +1,19 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+import threading
 from datetime import datetime, timedelta
-from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, fetch_stations, \
-    fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
-from create_weather import create_weather_msg
+
+import telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
+import telegramcalendar
 from create_msg import create_help_msg
-from create_weather import fetch_weather
-from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
 from create_msg import create_message_text, create_message_train, create_message_text_activity, \
     create_message_text_place
+from create_weather import create_weather_msg
+from create_weather import fetch_weather
+from fetch_data import fetch_all_events, fetch_nearby, fetch_query, fetch_by_date, fetch_trains, \
+    fetch_activities_by_keyword, fetch_all_activities, fetch_all_places, fetch_places_by_keyword
+from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
 from tag_keyboard_util import create_tag_keyboard_markup
-import telegram
-import threading
-import telegramcalendar
 
 # a processed list of all events to be fetched once an hour and should be used by all functions
 all_events = []
@@ -102,7 +104,7 @@ def search_inline_handler(update, context):
 
 
 # Handles the button to check location for result after each Event, Activity, or Place
-def location_inline_handler(update, context):
+def location_inline_handler(update):
     query = update.callback_query
     if query.data == 'l1':
         # TODO: handle get events/activitys.. location and send it to user via bot.send_location
@@ -230,6 +232,7 @@ def weather(update, context):
     weatherdata = fetch_weather()
     weathermsg = create_weather_msg(weatherdata)
     context.bot.send_message(chat_id=update.effective_chat.id, text=weathermsg, parse_mode=telegram.ParseMode.HTML)
+
 
 # Function that sends the given text back in all caps as a message
 def helptext(update, context):
