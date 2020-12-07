@@ -43,7 +43,7 @@
     <br />
     <a href="https://github.com/Stadin-helpperit/hkihelperbot-server/issues">Report a Bug</a>
     ·
-    <a href="https://github.com/Stadin-helpperit/hkihelperbot-server/issues">Request Feature</a>
+    <a href="https://github.com/Stadin-helpperit/hkihelperbot-server/issues">Request a Feature</a>
   </p>
 </p>
 
