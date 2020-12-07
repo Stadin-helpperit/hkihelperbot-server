@@ -3,9 +3,12 @@ from emoji import emojize
 from pathlib import Path
 import json
 
+# Helper functions to create inline keyboards for selecting search keywords
+
+# Resolves the current path
 path = Path(__file__).parent / "../tag_keyboard.json"
 
-# This function constructs the help message for the user
+# Opens the jsondata
 with open(path) as json_data:
     tag_keyboard_data = json.load(json_data)
 

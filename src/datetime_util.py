@@ -4,6 +4,7 @@ import pytz
 
 # Helper functions to reformat date/time data
 
+# Date in string format to datetime object
 def str_to_datetime(date_string):
     date_time_object = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ')
     from_zone_utc = pytz.utc
@@ -13,6 +14,7 @@ def str_to_datetime(date_string):
     return date_time_object
 
 
+# Datetime object format to string format
 def datetime_to_str(date_time_object):
     if isinstance(date_time_object, datetime):
         date_string = date_time_object.strftime("%d.%m.%Y, %H:%M")
