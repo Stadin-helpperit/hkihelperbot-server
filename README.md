@@ -24,7 +24,7 @@
 [![CodeQL][code-shield]][actions-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+[![License][license-shield]][license-url]
 
 
 <!-- PROJECT LOGO -->
@@ -203,5 +203,5 @@ Project Link: [https://github.com/Stadin-helpperit/hkihelperbot-server](https://
 [contributors-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/graphs/contributors
 [issues-shield]: https://img.shields.io/github/issues/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
 [issues-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/issues
-[license-shield]: https://img.shields.io/github/license/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Stadin-helpperit/hkihelperbot-server?style=for-the-badge
 [license-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/blob/master/LICENSE
