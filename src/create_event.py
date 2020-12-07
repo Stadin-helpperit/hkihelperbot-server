@@ -1,5 +1,5 @@
 from classes.Event import Event
-from utilities import str_to_datetime
+from datetime_util import str_to_datetime
 
 # --- HERE WE FORM EVENT OBJECTS FROM FETCHED DATA ---
 

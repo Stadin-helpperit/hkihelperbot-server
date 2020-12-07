@@ -1,4 +1,4 @@
-from utilities import datetime_to_str
+from datetime_util import datetime_to_str
 from datetime import datetime
 from emoji import emojize
 import re

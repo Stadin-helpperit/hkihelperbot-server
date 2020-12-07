@@ -8,7 +8,7 @@ from create_weather import fetch_weather
 from fetch_hsl_data import fetch_hsl_route, create_route_msg, fetch_search_address
 from create_msg import create_message_text, create_message_train, create_message_text_activity, \
     create_message_text_place
-from utilities import create_tag_keyboard_markup
+from tag_keyboard_util import create_tag_keyboard_markup
 import telegram
 import threading
 import telegramcalendar

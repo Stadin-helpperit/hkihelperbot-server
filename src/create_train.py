@@ -1,5 +1,5 @@
 from classes.Train import Train
-from utilities import str_to_datetime
+from datetime_util import str_to_datetime
 
 # --- HERE WE FORM TRAIN OBJECTS FROM FETCHED DATA ---
 

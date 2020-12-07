@@ -1,31 +1,13 @@
-from datetime import datetime
-import pytz, json
 from telegram import InlineKeyboardButton
 from emoji import emojize
+from pathlib import Path
+import json
 
-
-# Helper functions to reformat date/time data
+path = Path(__file__).parent / "../tag_keyboard.json"
 
 # This function constructs the help message for the user
-with open("../tag_keyboard.json") as json_data:
+with open(path) as json_data:
     tag_keyboard_data = json.load(json_data)
-
-
-def str_to_datetime(date_string):
-    date_time_object = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ')
-    from_zone_utc = pytz.utc
-    to_zone_local = pytz.timezone("Europe/Helsinki")
-    date_time_object = date_time_object.replace(tzinfo=from_zone_utc)
-    date_time_object = date_time_object.astimezone(to_zone_local)
-    return date_time_object
-
-
-def datetime_to_str(date_time_object):
-    if isinstance(date_time_object, datetime):
-        date_string = date_time_object.strftime("%d.%m.%Y, %H:%M")
-    else:
-        date_string = date_time_object
-    return date_string
 
 
 # Function that creates buttons for tag keyboard by chosen data type, tag list and columns amount
@@ -34,7 +16,8 @@ def create_buttons(tag_list, columns, data_type):
     tag_keyboard = []
     tag_keyboard_row = []
     for tag in tag_list["tags"]:
-        new_button = InlineKeyboardButton(text=(emojize(tag["tag"] + ' ' + tag["emoji"], use_aliases=True)), callback_data=data_type + '_' + tag["key"])
+        new_button = InlineKeyboardButton(text=(emojize(tag["tag"] + ' ' + tag["emoji"], use_aliases=True)),
+                                          callback_data=data_type + '_' + tag["key"])
         tag_keyboard_row.append(new_button)
         if len(tag_keyboard_row) == columns:
             tag_keyboard.append(tag_keyboard_row)
