@@ -204,4 +204,4 @@ Project Link: [https://github.com/Stadin-helpperit/hkihelperbot-server](https://
 [issues-shield]: https://img.shields.io/github/issues/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
 [issues-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/issues
 [license-shield]: https://img.shields.io/github/license/Stadin-helpperit/hkihelperbot-server.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo/blob/master/LICENSE.txt
+[license-url]: https://github.com/Stadin-helpperit/hkihelperbot-server/blob/master/LICENSE
