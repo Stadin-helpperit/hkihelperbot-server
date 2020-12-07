@@ -41,8 +41,6 @@
     <a href="http://open-api.myhelsinki.fi/">MyHelsinki Open API</a>. The bot responds to different commands and requests. 
     <br />
     <br />
-    <br />
-    ·
     <a href="https://github.com/Stadin-helpperit/hkihelperbot-server/issues">Report a Bug</a>
     ·
     <a href="https://github.com/Stadin-helpperit/hkihelperbot-server/issues">Request Feature</a>
