@@ -160,6 +160,12 @@ Below you can see the `/search` command in use.
 
 <img src="/imgs/search.gif" width="300" alt="GIF of search function"/>
 
+### Generally helpful code for other Telegram bots written in Python
+
+Check out ```tag_keyboard_util.py``` in the src folder and the functions ```handle_search_events()``` and ```handle_search_places()``` in ```bot.py``` for how we dynamically create the search keyword/tag inline keyboard based on the data in ```tag_keyboard.json```. You can see this code in action on the gif above!
+
+We also used [telegram-calendar-keyboard](https://github.com/grcanosa/telegram-calendar-keyboard) by [grcanosa](https://github.com/grcanosa) to create the calendar for the bot's /searchdate function.
+
 <!-- ROADMAP -->
 ## Roadmap
 
