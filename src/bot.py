@@ -240,7 +240,7 @@ def route(update, context):
                 context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg,
                                          parse_mode=telegram.ParseMode.HTML)
             except (TypeError, IndexError) as error:
-                errormsg = "Something unexpected went wrong :crying_face: :white_flag:" \
+                errormsg = "Something unexpected went wrong :crying_face: :white_flag: " \
                            "My data source might be having problems finding a route. I'm so sorry!"
 
                 context.bot.send_message(chat_id=update.effective_chat.id, text=emojize(errormsg))
