@@ -67,7 +67,7 @@ def fetch_hsl_route(from_loc, to_loc):
             return request.json()
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
-    except (IndexError, TypeError):
+    except (TypeError, IndexError):
         pass
 
 
@@ -85,7 +85,7 @@ def fetch_search_address(place_name):
         address_and_loc = label + '::' + str(coords['lat']) + ' ' + str(coords['lon'])
 
         return address_and_loc
-    except (IndexError, TypeError):
+    except TypeError:
         pass
 
 

@@ -215,31 +215,49 @@ def trains(update, context):
 
 
 def route(update, context):
-    try:
-        if context.args:
-            to_index = context.args.index('to')
-            from_name = '%20'.join(context.args[0:to_index])
-            to_name = '%20'.join(context.args[to_index + 1:])
+    hsl_fetch_result = None
+    from_address_and_loc = None
+    to_address_and_loc = None
+
+    if context.args:
+        to_index = context.args.index('to')
+        from_name = '%20'.join(context.args[0:to_index])
+        to_name = '%20'.join(context.args[to_index + 1:])
+        try:
             from_address_and_loc = fetch_search_address(from_name)
             to_address_and_loc = fetch_search_address(to_name)
 
             print(from_address_and_loc + ':::' + to_address_and_loc)
 
-            hsl_fetch_result = fetch_hsl_route(from_address_and_loc, to_address_and_loc)
+            try:
+                hsl_fetch_result = fetch_hsl_route(from_address_and_loc, to_address_and_loc)
 
-            if hsl_fetch_result['data']['plan']['itineraries']:
-                routemsg = create_route_msg(hsl_fetch_result)
-            else:
-                routemsg = "Route not found :( Try adding the city's name after the address(es), it might help!"
-        else:
-            routemsg = "Write the starting and destination addresses after the command. Like this:\n\n" \
-                       "/from ratapihantie 13 to Pietari Kalmin Katu 15"
+                if hsl_fetch_result['data']['plan']['itineraries']:
+                    routemsg = create_route_msg(hsl_fetch_result)
+                else:
+                    routemsg = "Route not found :( Try adding the city's name after the address(es), it might help!"
 
-        context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
-    except TypeError as error:
-        errormsg = "Something unknown went wrong with the search for the best route :crying_face: :white_flag: Sorry!"
-        context.bot.send_message(chat_id=update.effective_chat.id, text=emojize(errormsg))
-        print("Error handled in function route():", error)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg,
+                                         parse_mode=telegram.ParseMode.HTML)
+            except (TypeError, IndexError) as error:
+                errormsg = "Something unexpected went wrong :crying_face: :white_flag:" \
+                           "My data source might be having problems finding a route. I'm so sorry!"
+
+                context.bot.send_message(chat_id=update.effective_chat.id, text=emojize(errormsg))
+                print("Error handled in function route():", error)
+
+        except (IndexError, IndexError) as error:
+            errormsg = "For some reason I couldn't find the address. You can check that you spelled the address " \
+                       "correctly or maybe my source for address data is having problems :face_with_rolling_eyes:"
+            context.bot.send_message(chat_id=update.effective_chat.id, text=emojize(errormsg))
+            print("Error handled in function route():", error)
+
+    else:
+        routemsg = "Write the starting and destination addresses after the command. Like this:\n\n" \
+                   "/from ratapihantie 13 to Pietari Kalmin Katu 15"
+
+        context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg,
+                                 parse_mode=telegram.ParseMode.HTML)
 
 
 def weather(update, context):
