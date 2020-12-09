@@ -67,7 +67,7 @@ def fetch_hsl_route(from_loc, to_loc):
             return request.json()
         else:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
-    except:
+    except (IndexError, TypeError):
         pass
 
 
@@ -85,7 +85,7 @@ def fetch_search_address(place_name):
         address_and_loc = label + '::' + str(coords['lat']) + ' ' + str(coords['lon'])
 
         return address_and_loc
-    except:
+    except (IndexError, TypeError):
         pass
 
 
@@ -135,7 +135,7 @@ def create_route_msg(hsl_fetch_result):
     route_msg += '\n<b>Walk distance: </b>' + \
                  str(int(round(hsl_fetch_result['data']['plan']['itineraries'][0]['walkDistance'], -1))) + ' metriä'
     route_msg += '\n<b>Total price: </b>' + \
-                 "{:.2f}".format(hsl_fetch_result['data']['plan']['itineraries'][0]['fares'][0]['cents'] / 100)\
+                 "{:.2f}".format(hsl_fetch_result['data']['plan']['itineraries'][0]['fares'][0]['cents'] / 100) \
                  + ' €\n\n'
 
     # first leg of the journey
