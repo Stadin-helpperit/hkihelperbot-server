@@ -199,10 +199,18 @@ def search_places(update, context, search_word):
 
 # Function that fetches trains from VR/rata.digitraffic API with requested parameters and returns timetable in message
 def trains(update, context):
-    trains_result = fetch_trains(context.args)
-    for item in trains_result:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
-                                 parse_mode=telegram.ParseMode.HTML)
+    if context.args:
+        trains_result = fetch_trains(context.args)
+        for item in trains_result:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_train(item),
+                                     parse_mode=telegram.ParseMode.HTML)
+    else:
+        msgtext = \
+            'Write the station code after /trains to get ' \
+            'the arriving and departing trains for that ' \
+            'station.\n\nFor example, the station code for ' \
+            'Helsinki Central Train station is HKI.'
+        context.bot.send_message(chat_id=update.effective_chat.id, text=msgtext)
 
 
 def route(update, context):
@@ -216,14 +224,15 @@ def route(update, context):
         print(from_address_and_loc + ':::' + to_address_and_loc)
 
         hsl_fetch_result = fetch_hsl_route(from_address_and_loc, to_address_and_loc)
+
+        if hsl_fetch_result['data']['plan']['itineraries']:
+            routemsg = create_route_msg(hsl_fetch_result)
+        else:
+            routemsg = "Route not found :( Try adding the city's name after the address, it might help!"
+
     else:
         # TODO: /route command should also work without parameters
         return 0
-
-    if hsl_fetch_result['data']['plan']['itineraries']:
-        routemsg = create_route_msg(hsl_fetch_result)
-    else:
-        routemsg = "Route not found :( Try adding the city's name after the address, it might help!"
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=routemsg, parse_mode=telegram.ParseMode.HTML)
 
