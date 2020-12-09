@@ -122,8 +122,8 @@ def search_events(update, context, search_word):
                 context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
                                        caption=create_message_text(item), parse_mode=telegram.ParseMode.HTML)
             else:
-                context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
-                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item),
+                                         parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
@@ -166,8 +166,8 @@ def search_activities(update, context, search_word):
                 context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
                                        caption=msg_text, parse_mode=telegram.ParseMode.HTML)
             else:
-                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text
-                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text,
+                                         parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
@@ -188,8 +188,8 @@ def search_places(update, context, search_word):
                 context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
                                        caption=msg_text, parse_mode=telegram.ParseMode.HTML)
             else:
-                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text
-                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text,
+                                         parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,
@@ -400,8 +400,8 @@ def search_date(update, context, date):
                 context.bot.send_photo(chat_id=update.effective_chat.id, photo=item.img_link,
                                        caption=create_message_text(item), parse_mode=telegram.ParseMode.HTML)
             else:
-                context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item)
-                                         , parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
+                context.bot.send_message(chat_id=update.effective_chat.id, text=create_message_text(item),
+                                         parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
     else:
         context.bot.send_message(chat_id=update.effective_chat.id,

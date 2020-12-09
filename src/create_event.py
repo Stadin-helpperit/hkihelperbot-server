@@ -58,7 +58,7 @@ def create_event(item):
     # Set image if it exists
     if item['description']['images']:
         if item['description']['images'][0]['url'] is not None and '{' not in item['description']['images'][0]['url']:
-            event.img_link = item['description']['images'][0]['url'] 
+            event.img_link = item['description']['images'][0]['url']
 
     # Return the created event
     return event

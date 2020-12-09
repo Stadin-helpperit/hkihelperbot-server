@@ -2,7 +2,7 @@
 
 class Train:
     def __init__(self, number='', datetime='', train_type='', train_category='', line_id='', departure='', arrival='',
-                 fromTrack='', toTrack=''):
+                 from_track='', to_track=''):
         self.number = number
         self.datetime = datetime
         self.train_type = train_type
@@ -10,5 +10,5 @@ class Train:
         self.line_id = line_id
         self.departure = departure
         self.arrival = arrival
-        self.fromTrack = fromTrack
-        self.toTrack= toTrack
+        self.fromTrack = from_track
+        self.toTrack = to_track

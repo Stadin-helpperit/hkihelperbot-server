@@ -17,8 +17,3 @@ class Activity:
 
     def add_tag(self, tag):
         self.tags.append(tag)
-
-
-
-
-   
