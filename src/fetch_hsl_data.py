@@ -9,78 +9,84 @@ today_time = datetime.now().strftime("%H:%M:%S")
 
 
 def fetch_hsl_route(from_loc, to_loc):
-    headers = {'Content-Type': 'application/json'}
-    query = """
-    {
-      plan(
-        fromPlace: """ + '"' + from_loc + '"' + """,
-        toPlace: """ + '"' + to_loc + '"' + """,
-        date: """ + '"' + today_date + '"' + """,
-        time: """ + '"' + today_time + '"' + """,
-      ) {
-        itineraries{
-          walkDistance,
-          duration,
-          legs {
-            mode
-            startTime
-            endTime
-            from {
-              lat
-              lon
-              name
-              stop {
-                code
-                name
+    try:
+        headers = {'Content-Type': 'application/json'}
+        query = """
+        {
+          plan(
+            fromPlace: """ + '"' + from_loc + '"' + """,
+            toPlace: """ + '"' + to_loc + '"' + """,
+            date: """ + '"' + today_date + '"' + """,
+            time: """ + '"' + today_time + '"' + """,
+          ) {
+            itineraries{
+              walkDistance,
+              duration,
+              legs {
+                mode
+                startTime
+                endTime
+                from {
+                  lat
+                  lon
+                  name
+                  stop {
+                    code
+                    name
+                  }
+                },
+                to {
+                  lat
+                  lon
+                  name
+                },
+                distance
+                legGeometry {
+                  length
+                  points
+                },
+                route {
+                  shortName
+                  longName
+                }
+              },
+              fares {
+                type
+                cents
+                currency
               }
-            },
-            to {
-              lat
-              lon
-              name
-            },
-            distance
-            legGeometry {
-              length
-              points
-            },
-            route {
-              shortName
-              longName
             }
-          },
-          fares {
-            type
-            cents
-            currency
           }
         }
-      }
-    }
-    """
+        """
 
-    request = requests.post('https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
-                            json={'query': query},
-                            headers=headers)
-    if request.status_code == 200:
-        return request.json()
-    else:
-        raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+        request = requests.post('https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
+                                json={'query': query},
+                                headers=headers)
+        if request.status_code == 200:
+            return request.json()
+        else:
+            raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
+    except:
+        pass
 
 
 # This function uses the digitransit address search api to find coordinates for user inputted places
 def fetch_search_address(place_name):
-    url = 'https://api.digitransit.fi/geocoding/v1/search?text={}&size=1'.format(place_name)
-    data = requests.get(url).json()
-    # extract coords and label from data
-    coords = {'lon': data['features'][0]['geometry']['coordinates'][0],
-              'lat': data['features'][0]['geometry']['coordinates'][1]}
-    label = data['features'][0]['properties']['label']
+    try:
+        url = 'https://api.digitransit.fi/geocoding/v1/search?text={}&size=1'.format(place_name)
+        data = requests.get(url).json()
+        # extract coords and label from data
+        coords = {'lon': data['features'][0]['geometry']['coordinates'][0],
+                  'lat': data['features'][0]['geometry']['coordinates'][1]}
+        label = data['features'][0]['properties']['label']
 
-    # change to the format used by digitransit graphql routing api
-    address_and_loc = label + '::' + str(coords['lat']) + ' ' + str(coords['lon'])
+        # change to the format used by digitransit graphql routing api
+        address_and_loc = label + '::' + str(coords['lat']) + ' ' + str(coords['lon'])
 
-    return address_and_loc
+        return address_and_loc
+    except:
+        pass
 
 
 def create_route_msg(hsl_fetch_result):
