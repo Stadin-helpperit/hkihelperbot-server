@@ -96,7 +96,7 @@ Try it out: [@HelsinkiHelperBot](https://t.me/HelsinkiHelperBot) (link to try th
 
 ##### Currently supported commands
 
-- /search [keyword] -- Search for events, places and activites in Helsinki
+- /search or /search [event/place/activity] [search tag] -- Search for events, places and activites in Helsinki
 - /searchdate -- Search for events on a specific day
 - /from [start address] to [destination address] -- Returns public transport directions to the destination
 - /trains [stationcode] -- Returns arriving and departing trains from the specified station
@@ -133,10 +133,12 @@ Tested to work in Python 3.6, 3.7 and 3.8. Built with Python 3.8.
 Clone the repository to your machine:
 >`git clone https://github.com/Stadin-helpperit/hkihelperbot-server.git`
 >
+>`cd hkihelperbot-server/`
+>
 Install the dependencies:
 >`pip install -r requirements.txt`
 >
-Now you need to make a .env file for your environment variables and add your Telegram Bot API Key to there. You can use the following command, just replace <YOUR API KEY> with your own API key. You can get your own API key from Telegram's [@BotFather](https://t.me/BotFather).
+Now you need to make a .env file for your environment variables to the project root and add your Telegram Bot API Key to there. You can use the following command, just replace <YOUR API KEY> with your own API key. You can get your own API key from Telegram's [@BotFather](https://t.me/BotFather).
 >
 >`echo API_TOKEN = "<YOUR API KEY>" > .env`
 >
@@ -145,8 +147,10 @@ If you use another weather API you'll likely need to edit the code a bit to make
 >
 >`echo WeatherApi_TOKEN = "<YOUR API KEY>" > .env`
 >
-Now you can run the app with the following command:
->`python bot.py`
+Now you can run the app by changing the directory and running start.py:
+>`cd src/`
+>
+>`python start.py`
 
 
 
