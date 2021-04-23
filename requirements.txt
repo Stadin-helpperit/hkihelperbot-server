@@ -5,7 +5,7 @@ pytz==2019.3
 pytest==6.0.2
 pip==20.2.4
 cryptography==3.3.2
-py==1.9.0
+py==1.10.0
 lxml==4.6.3
 setuptools==50.3.0
 telegram==0.0.1
